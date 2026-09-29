@@ -1,59 +1,94 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 📚 KalaPustaka - Sistem Informasi Manajemen Perpustakaan Terpadu
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+**KalaPustaka** adalah aplikasi Sistem Informasi Perpustakaan berbasis web modern yang dibangun menggunakan framework **Laravel**. Aplikasi ini dirancang untuk mempermudah pengelolaan koleksi buku, data anggota, transaksi sirkulasi peminjaman & pengembalian buku, serta pembuatan laporan terperinci.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## ✨ Fitur Utama
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+1. **Autentikasi & Multi-Peran (2 Peran: Admin & User)**
+   - **Admin (Petugas Perpustakaan)**: Memiliki akses penuh terhadap manajemen buku (CRUD), data anggota (CRUD), transaksi peminjaman & pengembalian buku, serta cetak laporan (PDF) dan ekspor laporan (Excel).
+   - **User (Anggota / Siswa)**: Memiliki akses menjelajah katalog buku, mencari buku, melihat data anggota, dan melakukan pengajuan transaksi peminjaman.
+2. **CRUD Lengkap Data Buku & Fisik Buku (`detail_buku`)**
+   - Otomatis membuat nomor fisik eksemplar buku (`BK001_01`, `BK001_02`, dst.) saat buku baru ditambahkan.
+3. **CRUD Lengkap Data Anggota**
+   - Otomatis menghasilkan kode unik ID Anggota (`a0001`, `a0002`, dst.) dan mengelola biodata keanggotaan.
+4. **Sirkulasi Peminjaman & Pengembalian Buku**
+   - Pencatatan peminjaman secara *real-time* dan fitur *Kembalikan Buku* yang memulihkan stok fisik eksemplar secara otomatis.
+5. **Pencarian (Search) & Pagination**
+   - Fitur pencarian interaktif untuk Katalog Buku, Data Anggota, dan Transaksi.
+   - Fitur *pagination* dinamis pada tabel data.
+6. **Laporan Cetak & Ekspor (PDF & Excel)**
+   - **Cetak Laporan PDF**: Layout khusus dokumen siap cetak langsung dari browser.
+   - **Ekspor Excel (`.xlsx` / `.csv`)**: Mengunduh rekapitulasi laporan bulanan dalam format kompatibel Microsoft Excel.
+7. **Keamanan Dasar**
+   - Sandi di-hash menggunakan algoritma **Bcrypt**.
+   - Bebas dari SQL Injection menggunakan Laravel Eloquent Prepared Statements.
+   - Validasi input form yang ketat.
+8. **Tampilan Responsif & Modern (Design System)**
+   - Mengusung tema *Glassmorphism*, font Google *Plus Jakarta Sans*, *layered shadows*, dan *responsive layout* untuk perangkat HP/Tablet/Desktop.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 🔑 Akun Demo (Demo Accounts)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+Aplikasi telah dilengkapi *database seeder* dengan dua akun sampel siap pakai:
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+| Peran (Role) | Email | Password | Hak Akses |
+| :--- | :--- | :--- | :--- |
+| **Admin** | `admin@kalapustaka.com` | `password` | Akses Penuh (CRUD, Pengembalian, Laporan PDF & Excel) |
+| **User (Siswa)** | `user@kalapustaka.com` | `password` | Akses Katalog, Anggota, & Peminjaman Buku |
 
-## Laravel Sponsors
+> 💡 *Pengguna baru juga dapat melakukan pendaftaran akun dengan memilih peran Admin atau User pada halaman Registrasi.*
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+---
 
-### Premium Partners
+## 🗄️ Skema Database & ERD
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+Aplikasi ini menggunakan 5 tabel utama yang saling terelasi:
+- **`users`**: `id`, `name`, `email`, `password`, `role` (`admin`/`user`), `timestamps`
+- **`buku`**: `id_buku` (PK), `judul_buku`, `pengarang`, `penerbit`, `tahun_terbit`, `jumlah`, `timestamps`
+- **`detail_buku`**: `no_buku` (PK), `id_buku` (FK -> `buku.id_buku`), `status` (`ada`/`dipinjam`), `timestamps`
+- **`anggota`**: `id_anggota` (PK), `nama_anggota`, `kelas`, `tempatlahir`, `tgllahir`, `timestamps`
+- **`peminjaman`**: `id_pinjam` (PK), `tgl_pinjam`, `id_anggota` (FK -> `anggota.id_anggota`), `no_buku` (FK -> `detail_buku.no_buku`), `status` (`1`=dipinjam, `0`=selesai), `timestamps`
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 🚀 Cara Instalasi & Menjalankan Aplikasi
 
-## Code of Conduct
+1. **Clone Repository / Buka Direktori Proyek**
+   ```bash
+   cd c:\xampp\htdocs\KalaPustaka
+   ```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+2. **Instal Dependencies (Composer)**
+   ```bash
+   composer install
+   ```
 
-## Security Vulnerabilities
+3. **Konfigurasi Environment (`.env`)**
+   Pastikan pengatur basis data sesuai dengan konfigurasi XAMPP MySQL lokal Anda:
+   ```env
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=kalapustaka
+   DB_USERNAME=root
+   DB_PASSWORD=
+   ```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+4. **Jalankan Migrasi Database & Seeder**
+   ```bash
+   php artisan migrate --seed
+   ```
 
-## License
+5. **Jalankan Server Lokal**
+   ```bash
+   php artisan serve
+   ```
+   Buka browser di: `http://127.0.0.1:8000` (atau via XAMPP `http://localhost/KalaPustaka/public`).
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+
+## 📄 Lisensi
+Proyek ini dibuat untuk keperluan tugas akademik Sistem Informasi Perpustakaan KalaPustaka.

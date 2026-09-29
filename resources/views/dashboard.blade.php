@@ -3,37 +3,93 @@
 @section('title', 'Dashboard')
 
 @section('content')
-<div class="page-header">
-    <h1>Selamat Datang di KalaPustaka</h1>
-    <p>Sistem Informasi Manajemen Perpustakaan Terpadu</p>
-</div>
-
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
-    <div class="card" style="text-align: center;">
-        <div style="color: var(--primary); margin-bottom: 1rem;"><i data-feather="book" style="width: 40px; height: 40px;"></i></div>
-        <h3>{{ $total_buku }}</h3>
-        <p class="text-muted">Total Fisik Buku</p>
-    </div>
-    <div class="card" style="text-align: center;">
-        <div style="color: var(--secondary); margin-bottom: 1rem;"><i data-feather="users" style="width: 40px; height: 40px;"></i></div>
-        <h3>{{ $total_anggota }}</h3>
-        <p class="text-muted">Total Anggota</p>
-    </div>
-    <div class="card" style="text-align: center;">
-        <div style="color: #f59e0b; margin-bottom: 1rem;"><i data-feather="bookmark" style="width: 40px; height: 40px;"></i></div>
-        <h3>{{ $total_dipinjam }}</h3>
-        <p class="text-muted">Buku Dipinjam</p>
-    </div>
-</div>
-
-<div class="card">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 10px;">
-        <h2>Peminjaman Terbaru</h2>
+<!-- Hero Welcome Banner -->
+<div class="hero-banner animate-fade-in">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem; position: relative; z-index: 2;">
         <div>
+            <div style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; background: rgba(255,255,255,0.15); border-radius: 9999px; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.75rem;">
+                <i data-feather="shield" style="width: 14px; height: 14px;"></i> Akses Peran: {{ strtoupper(auth()->user()->role ?? 'user') }}
+            </div>
+            <h1>Halo, {{ auth()->user()->name ?? 'User' }} 👋</h1>
+            <p>
+                @if(auth()->user()->role === 'admin')
+                    Anda masuk sebagai <strong>Admin (Petugas Perpustakaan)</strong> dengan hak pengelolaan data penuh (Buku, Anggota, Peminjaman, & Laporan).
+                @else
+                    Selamat datang di KalaPustaka. Jelajahi koleksi buku dan lakukan transaksi peminjaman buku favorit Anda.
+                @endif
+            </p>
+        </div>
+        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
             @if(auth()->user()->role === 'admin')
-            <a href="{{ route('laporan.index') }}" class="btn" style="background: var(--bg-color); border: 1px solid var(--border); margin-right: 10px;"><i data-feather="printer"></i> Cetak Laporan</a>
+            <a href="{{ route('laporan.index') }}" class="btn" style="background: rgba(255, 255, 255, 0.2); color: white; border: 1px solid rgba(255, 255, 255, 0.3); backdrop-filter: blur(8px);">
+                <i data-feather="printer"></i> Laporan & Ekspor
+            </a>
             @endif
-            <a href="{{ route('peminjaman.create') }}" class="btn btn-primary"><i data-feather="plus"></i> Pinjam Buku</a>
+            <a href="{{ route('peminjaman.create') }}" class="btn" style="background: white; color: var(--primary); font-weight: 700; box-shadow: 0 4px 15px rgba(0,0,0,0.15);">
+                <i data-feather="plus-circle"></i> Pinjam Buku Baru
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- KPI Stats Grid -->
+<div class="stats-grid animate-fade-in">
+    <!-- Stat 1: Total Buku -->
+    <div class="stat-card" style="--card-accent: #6366f1;">
+        <div class="stat-icon" style="--stat-icon-bg: #eef2ff; --stat-icon-color: #6366f1;">
+            <i data-feather="book-open"></i>
+        </div>
+        <div class="stat-info">
+            <h3>{{ $total_buku }}</h3>
+            <p>Total Fisik Eksemplar Buku</p>
+        </div>
+    </div>
+
+    <!-- Stat 2: Total Anggota -->
+    <div class="stat-card" style="--card-accent: #10b981;">
+        <div class="stat-icon" style="--stat-icon-bg: #ecfdf5; --stat-icon-color: #10b981;">
+            <i data-feather="users"></i>
+        </div>
+        <div class="stat-info">
+            <h3>{{ $total_anggota }}</h3>
+            <p>Anggota Terdaftar</p>
+        </div>
+    </div>
+
+    <!-- Stat 3: Buku Dipinjam -->
+    <div class="stat-card" style="--card-accent: #f59e0b;">
+        <div class="stat-icon" style="--stat-icon-bg: #fffbeb; --stat-icon-color: #f59e0b;">
+            <i data-feather="bookmark"></i>
+        </div>
+        <div class="stat-info">
+            <h3>{{ $total_dipinjam }}</h3>
+            <p>Buku Sedang Dipinjam</p>
+        </div>
+    </div>
+
+    <!-- Stat 4: Aktivitas Layanan -->
+    <div class="stat-card" style="--card-accent: #3b82f6;">
+        <div class="stat-icon" style="--stat-icon-bg: #eff6ff; --stat-icon-color: #3b82f6;">
+            <i data-feather="activity"></i>
+        </div>
+        <div class="stat-info">
+            <h3>{{ $peminjaman_terbaru->total() }}</h3>
+            <p>Total Transaksi Sirkulasi</p>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Transactions Card -->
+<div class="card animate-fade-in">
+    <div class="card-header" style="flex-wrap: wrap; gap: 1rem;">
+        <div>
+            <h2 class="card-title">Daftar Transaksi Peminjaman</h2>
+            <p style="font-size: 0.875rem; color: var(--text-muted); margin-top: 2px;">Daftar transaksi sirkulasi peminjaman & pengembalian buku</p>
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+            <a href="{{ route('peminjaman.create') }}" class="btn btn-primary btn-sm">
+                <i data-feather="plus" style="width: 16px; height: 16px;"></i> Peminjaman Baru
+            </a>
         </div>
     </div>
     
@@ -41,22 +97,47 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th>ID Pinjam</th>
-                    <th>Tanggal</th>
+                    <th>ID Transaksi</th>
+                    <th>Waktu Pinjam</th>
                     <th>Nama Anggota</th>
                     <th>Judul Buku</th>
                     <th>No Fisik</th>
                     <th>Status</th>
+                    <th style="text-align: center; width: 140px;">Aksi Pengembalian</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($peminjaman_terbaru as $pinjam)
                 <tr>
-                    <td><strong>{{ $pinjam->id_pinjam }}</strong></td>
-                    <td>{{ \Carbon\Carbon::parse($pinjam->tgl_pinjam)->format('d M Y, H:i') }}</td>
-                    <td>{{ $pinjam->anggota->nama_anggota }}</td>
-                    <td>{{ $pinjam->detailBuku->buku->judul_buku }}</td>
-                    <td>{{ $pinjam->no_buku }}</td>
+                    <td>
+                        <span style="font-weight: 700; color: var(--primary); font-family: monospace; font-size: 0.95rem;">
+                            {{ $pinjam->id_pinjam }}
+                        </span>
+                    </td>
+                    <td style="color: var(--text-muted); font-size: 0.875rem;">
+                        <i data-feather="calendar" style="width: 14px; height: 14px; margin-bottom: -2px; margin-right: 4px;"></i>
+                        {{ \Carbon\Carbon::parse($pinjam->tgl_pinjam)->format('d M Y, H:i') }}
+                    </td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <div style="width: 28px; height: 28px; border-radius: 50%; background: var(--primary-light); color: var(--primary); font-weight: 700; font-size: 0.75rem; display: flex; align-items: center; justify-content: center;">
+                                {{ strtoupper(substr($pinjam->anggota->nama_anggota ?? 'A', 0, 1)) }}
+                            </div>
+                            <span style="font-weight: 600; color: var(--text-dark);">
+                                {{ $pinjam->anggota->nama_anggota ?? '-' }}
+                            </span>
+                        </div>
+                    </td>
+                    <td>
+                        <span style="font-weight: 600; color: var(--text-dark);">
+                            {{ $pinjam->detailBuku->buku->judul_buku ?? '-' }}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="badge" style="background: var(--bg-color); color: var(--text-body); border: 1px solid var(--border);">
+                            <i data-feather="hash" style="width: 12px; height: 12px;"></i> {{ $pinjam->no_buku }}
+                        </span>
+                    </td>
                     <td>
                         @if($pinjam->status == '1')
                             <span class="badge badge-warning">Dipinjam</span>
@@ -64,14 +145,35 @@
                             <span class="badge badge-success">Selesai</span>
                         @endif
                     </td>
+                    <td style="text-align: center;">
+                        @if($pinjam->status == '1')
+                            <form action="{{ route('peminjaman.kembali', $pinjam->id_pinjam) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin buku ini sudah dikembalikan?');" style="margin: 0;">
+                                @csrf
+                                <button type="submit" class="btn btn-secondary btn-sm" style="background: var(--secondary-light); color: #047857; border-color: rgba(16, 185, 129, 0.3);" title="Kembalikan Buku">
+                                    <i data-feather="check-circle" style="width: 14px; height: 14px;"></i> Kembalikan
+                                </button>
+                            </form>
+                        @else
+                            <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">- Terkembali -</span>
+                        @endif
+                    </td>
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="6" style="text-align: center; color: var(--text-muted);">Belum ada data peminjaman</td>
+                    <td colspan="7" style="text-align: center; padding: 3rem 1rem;">
+                        <div style="color: var(--text-muted);">
+                            <i data-feather="inbox" style="width: 44px; height: 44px; margin-bottom: 0.5rem; stroke-width: 1.5;"></i>
+                            <p style="font-weight: 500;">Belum ada transaksi peminjaman tercatat.</p>
+                        </div>
+                    </td>
                 </tr>
                 @endforelse
             </tbody>
         </table>
+    </div>
+
+    <div style="margin-top: 1.5rem;">
+        {{ $peminjaman_terbaru->links('pagination::bootstrap-4') }}
     </div>
 </div>
 @endsection

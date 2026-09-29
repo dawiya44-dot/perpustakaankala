@@ -23,7 +23,7 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->intended('dashboard');
+            return redirect()->intended('/');
         }
 
         return back()->withErrors([
@@ -42,18 +42,19 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
+            'role' => 'required|string|in:admin,user',
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'user', // Default role for open registration
+            'role' => $request->role,
         ]);
 
         Auth::login($user);
 
-        return redirect('/dashboard');
+        return redirect()->route('dashboard')->with('success', 'Pendaftaran berhasil! Selamat datang di KalaPustaka.');
     }
 
     public function logout(Request $request)

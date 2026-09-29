@@ -20,7 +20,14 @@ class AnggotaController extends Controller
 
     public function create()
     {
-        return view('anggota.create');
+        $last_anggota = Anggota::orderBy('id_anggota', 'desc')->first();
+        $next_id = 'a0001';
+        if ($last_anggota) {
+            $num = (int) preg_replace('/[^0-9]/', '', $last_anggota->id_anggota);
+            $next_id = 'a' . str_pad($num + 1, 4, '0', STR_PAD_LEFT);
+        }
+
+        return view('anggota.create', compact('next_id'));
     }
 
     public function store(Request $request)
@@ -28,21 +35,26 @@ class AnggotaController extends Controller
         $request->validate([
             'id_anggota' => 'required|unique:anggota,id_anggota|max:10',
             'nama_anggota' => 'required|max:50',
-            'kelas' => 'required|max:10',
+            'kelas' => 'required|max:20',
             'tempatlahir' => 'required|max:30',
             'tgllahir' => 'required|date',
         ]);
 
-        Anggota::create($request->all());
+        try {
+            Anggota::create([
+                'id_anggota' => $request->id_anggota,
+                'nama_anggota' => $request->nama_anggota,
+                'kelas' => $request->kelas,
+                'tempatlahir' => $request->tempatlahir,
+                'tgllahir' => $request->tgllahir,
+            ]);
 
-        return redirect()->route('anggota.index')->with('success', 'Data Anggota berhasil ditambahkan.');
+            return redirect()->route('anggota.index')->with('success', 'Data Anggota "' . $request->nama_anggota . '" berhasil ditambahkan.');
+        } catch (\Exception $e) {
+            return redirect()->back()->withInput()->withErrors(['error' => 'Gagal menyimpan data anggota: ' . $e->getMessage()]);
+        }
     }
 
-    public function edit(Anggota $anggotum) // Route model binding, param name is anggotum due to grammar rules, we'll override it manually to be safe
-    {
-        // Not using route model binding for safe naming
-    }
-    
     public function editById($id)
     {
         $anggota = Anggota::findOrFail($id);
@@ -53,15 +65,24 @@ class AnggotaController extends Controller
     {
         $request->validate([
             'nama_anggota' => 'required|max:50',
-            'kelas' => 'required|max:10',
+            'kelas' => 'required|max:20',
             'tempatlahir' => 'required|max:30',
             'tgllahir' => 'required|date',
         ]);
 
-        $anggota = Anggota::findOrFail($id);
-        $anggota->update($request->all());
+        try {
+            $anggota = Anggota::findOrFail($id);
+            $anggota->update([
+                'nama_anggota' => $request->nama_anggota,
+                'kelas' => $request->kelas,
+                'tempatlahir' => $request->tempatlahir,
+                'tgllahir' => $request->tgllahir,
+            ]);
 
-        return redirect()->route('anggota.index')->with('success', 'Data Anggota berhasil diperbarui.');
+            return redirect()->route('anggota.index')->with('success', 'Data Anggota berhasil diperbarui.');
+        } catch (\Exception $e) {
+            return redirect()->back()->withInput()->withErrors(['error' => 'Gagal memperbarui data anggota: ' . $e->getMessage()]);
+        }
     }
 
     public function destroy($id)

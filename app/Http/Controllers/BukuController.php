@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Buku;
+use App\Models\DetailBuku;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class BukuController extends Controller
 {
@@ -21,7 +23,14 @@ class BukuController extends Controller
 
     public function create()
     {
-        return view('buku.create');
+        $last_buku = Buku::orderBy('id_buku', 'desc')->first();
+        $next_id = 'b001';
+        if ($last_buku) {
+            $num = (int) preg_replace('/[^0-9]/', '', $last_buku->id_buku);
+            $next_id = 'b' . str_pad($num + 1, 3, '0', STR_PAD_LEFT);
+        }
+
+        return view('buku.create', compact('next_id'));
     }
 
     public function store(Request $request)
@@ -32,12 +41,40 @@ class BukuController extends Controller
             'pengarang' => 'required|max:50',
             'penerbit' => 'required|max:50',
             'tahun_terbit' => 'required|integer',
-            'jumlah' => 'required|integer|min:0',
+            'jumlah' => 'required|integer|min:1',
         ]);
 
-        Buku::create($request->all());
+        DB::beginTransaction();
+        try {
+            $buku = Buku::create([
+                'id_buku' => $request->id_buku,
+                'judul_buku' => $request->judul_buku,
+                'pengarang' => $request->pengarang,
+                'penerbit' => $request->penerbit,
+                'tahun_terbit' => $request->tahun_terbit,
+                'jumlah' => $request->jumlah,
+            ]);
 
-        return redirect()->route('buku.index')->with('success', 'Data Buku berhasil ditambahkan.');
+            // Auto-generate physical book copies in detail_buku table
+            for ($i = 1; $i <= $request->jumlah; $i++) {
+                $no_buku = $request->id_buku . '_' . str_pad($i, 2, '0', STR_PAD_LEFT);
+                DetailBuku::updateOrInsert(
+                    ['no_buku' => $no_buku],
+                    [
+                        'id_buku' => $request->id_buku,
+                        'status' => 'ada',
+                        'updated_at' => now(),
+                        'created_at' => now(),
+                    ]
+                );
+            }
+
+            DB::commit();
+            return redirect()->route('buku.index')->with('success', 'Data Buku "' . $request->judul_buku . '" dan ' . $request->jumlah . ' fisik eksemplar berhasil ditambahkan.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->withInput()->withErrors(['error' => 'Gagal menyimpan buku: ' . $e->getMessage()]);
+        }
     }
 
     public function editById($id)
@@ -56,10 +93,35 @@ class BukuController extends Controller
             'jumlah' => 'required|integer|min:0',
         ]);
 
-        $buku = Buku::findOrFail($id);
-        $buku->update($request->all());
+        DB::beginTransaction();
+        try {
+            $buku = Buku::findOrFail($id);
+            $buku->update([
+                'judul_buku' => $request->judul_buku,
+                'pengarang' => $request->pengarang,
+                'penerbit' => $request->penerbit,
+                'tahun_terbit' => $request->tahun_terbit,
+                'jumlah' => $request->jumlah,
+            ]);
 
-        return redirect()->route('buku.index')->with('success', 'Data Buku berhasil diperbarui.');
+            // Ensure detail_buku has at least $jumlah physical copies
+            for ($i = 1; $i <= $request->jumlah; $i++) {
+                $no_buku = $buku->id_buku . '_' . str_pad($i, 2, '0', STR_PAD_LEFT);
+                DetailBuku::firstOrCreate(
+                    ['no_buku' => $no_buku],
+                    [
+                        'id_buku' => $buku->id_buku,
+                        'status' => 'ada',
+                    ]
+                );
+            }
+
+            DB::commit();
+            return redirect()->route('buku.index')->with('success', 'Data Buku berhasil diperbarui.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->withInput()->withErrors(['error' => 'Gagal memperbarui buku: ' . $e->getMessage()]);
+        }
     }
 
     public function destroy($id)

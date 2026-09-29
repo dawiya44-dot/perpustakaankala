@@ -17,14 +17,14 @@ class PeminjamanController extends Controller
             ->where('status', 'ada')
             ->get()
             ->sortBy(function($detail) {
-                return $detail->buku->judul_buku;
+                return $detail->buku->judul_buku ?? '';
             });
 
         // Generate ID Pinjam
         $last_pinjam = Peminjaman::orderBy('id_pinjam', 'desc')->first();
         $next_id = "p0001";
         if ($last_pinjam) {
-            $num = (int)substr($last_pinjam->id_pinjam, 1);
+            $num = (int) preg_replace('/[^0-9]/', '', $last_pinjam->id_pinjam);
             $next_id = 'p' . str_pad($num + 1, 4, '0', STR_PAD_LEFT);
         }
 
@@ -54,10 +54,31 @@ class PeminjamanController extends Controller
 
             DB::commit();
 
-            return redirect()->route('peminjaman.create')->with('success', 'Peminjaman berhasil disimpan!');
+            return redirect()->route('dashboard')->with('success', 'Transaksi peminjaman buku berhasil disimpan!');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->route('peminjaman.create')->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
+    public function kembali($id)
+    {
+        $peminjaman = Peminjaman::findOrFail($id);
+
+        DB::beginTransaction();
+        try {
+            // Update status peminjaman menjadi 0 (Selesai/Dikembalikan)
+            $peminjaman->update(['status' => '0']);
+
+            // Kembalikan status fisik buku di detail_buku menjadi 'ada'
+            DetailBuku::where('no_buku', $peminjaman->no_buku)->update(['status' => 'ada']);
+
+            DB::commit();
+
+            return redirect()->back()->with('success', 'Buku (No. Fisik: ' . $peminjaman->no_buku . ') berhasil dikembalikan dan stok diperbarui!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Gagal memproses pengembalian buku: ' . $e->getMessage());
         }
     }
 }
