@@ -34,6 +34,7 @@
                     <i data-feather="book" style="width: 18px; height: 18px;"></i> Data Buku
                 </a>
             </li>
+            @if(auth()->user()->role === 'admin')
             <li>
                 <a href="{{ route('anggota.index') }}" class="{{ request()->routeIs('anggota.*') ? 'active' : '' }}">
                     <i data-feather="users" style="width: 18px; height: 18px;"></i> Data Anggota
@@ -44,6 +45,7 @@
                     <i data-feather="plus-circle" style="width: 18px; height: 18px;"></i> Peminjaman Baru
                 </a>
             </li>
+            @endif
             
             <li style="margin-left: 12px; padding-left: 16px; border-left: 1px solid var(--border); display: flex; align-items: center; gap: 12px;">
                 <div class="user-profile-badge">

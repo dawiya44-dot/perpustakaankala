@@ -25,22 +25,25 @@
                 <i data-feather="printer"></i> Laporan & Ekspor
             </a>
             @endif
+            @if(auth()->user()->role === 'admin')
             <a href="{{ route('peminjaman.create') }}" class="btn" style="background: white; color: var(--primary); font-weight: 700; box-shadow: 0 4px 15px rgba(0,0,0,0.15);">
                 <i data-feather="plus-circle"></i> Pinjam Buku Baru
             </a>
+            @endif
         </div>
     </div>
 </div>
 
 <!-- KPI Stats Grid -->
 <div class="stats-grid animate-fade-in">
+    @if(auth()->user()->role === 'admin')
     <!-- Stat 1: Total Buku -->
     <div class="stat-card" style="--card-accent: #6366f1;">
         <div class="stat-icon" style="--stat-icon-bg: #eef2ff; --stat-icon-color: #6366f1;">
             <i data-feather="book-open"></i>
         </div>
         <div class="stat-info">
-            <h3>{{ $total_buku }}</h3>
+            <h3>{{ $total_buku ?? 0 }}</h3>
             <p>Total Fisik Eksemplar Buku</p>
         </div>
     </div>
@@ -51,7 +54,7 @@
             <i data-feather="users"></i>
         </div>
         <div class="stat-info">
-            <h3>{{ $total_anggota }}</h3>
+            <h3>{{ $total_anggota ?? 0 }}</h3>
             <p>Anggota Terdaftar</p>
         </div>
     </div>
@@ -62,7 +65,7 @@
             <i data-feather="bookmark"></i>
         </div>
         <div class="stat-info">
-            <h3>{{ $total_dipinjam }}</h3>
+            <h3>{{ $total_dipinjam ?? 0 }}</h3>
             <p>Buku Sedang Dipinjam</p>
         </div>
     </div>
@@ -77,6 +80,29 @@
             <p>Total Transaksi Sirkulasi</p>
         </div>
     </div>
+    @else
+    <!-- Stat User 1: Buku Sedang Dipinjam -->
+    <div class="stat-card" style="--card-accent: #f59e0b;">
+        <div class="stat-icon" style="--stat-icon-bg: #fffbeb; --stat-icon-color: #f59e0b;">
+            <i data-feather="bookmark"></i>
+        </div>
+        <div class="stat-info">
+            <h3>{{ $buku_sedang_dipinjam ?? 0 }}</h3>
+            <p>Buku Sedang Saya Pinjam</p>
+        </div>
+    </div>
+
+    <!-- Stat User 2: Total Denda -->
+    <div class="stat-card" style="--card-accent: #ef4444;">
+        <div class="stat-icon" style="--stat-icon-bg: #fef2f2; --stat-icon-color: #ef4444;">
+            <i data-feather="alert-circle"></i>
+        </div>
+        <div class="stat-info">
+            <h3>Rp {{ number_format($total_denda ?? 0, 0, ',', '.') }}</h3>
+            <p>Total Denda Saya</p>
+        </div>
+    </div>
+    @endif
 </div>
 
 <!-- Recent Transactions Card -->
@@ -87,9 +113,11 @@
             <p style="font-size: 0.875rem; color: var(--text-muted); margin-top: 2px;">Daftar transaksi sirkulasi peminjaman & pengembalian buku</p>
         </div>
         <div style="display: flex; gap: 0.5rem;">
+            @if(auth()->user()->role === 'admin')
             <a href="{{ route('peminjaman.create') }}" class="btn btn-primary btn-sm">
                 <i data-feather="plus" style="width: 16px; height: 16px;"></i> Peminjaman Baru
             </a>
+            @endif
         </div>
     </div>
     
@@ -99,15 +127,25 @@
                 <tr>
                     <th>ID Transaksi</th>
                     <th>Waktu Pinjam</th>
+                    <th>Tenggat Waktu</th>
                     <th>Nama Anggota</th>
                     <th>Judul Buku</th>
                     <th>No Fisik</th>
                     <th>Status</th>
+                    <th>Denda</th>
+                    @if(auth()->user()->role === 'admin')
                     <th style="text-align: center; width: 140px;">Aksi Pengembalian</th>
+                    @endif
                 </tr>
             </thead>
             <tbody>
                 @forelse($peminjaman_terbaru as $pinjam)
+                @php
+                    $dueDate = \Carbon\Carbon::parse($pinjam->tgl_pinjam)->addDays(7);
+                    $isLate = now()->greaterThan($dueDate) && $pinjam->status == '1';
+                    $daysLate = $isLate ? now()->diffInDays($dueDate) : 0;
+                    $dendaRow = $daysLate * 1000;
+                @endphp
                 <tr>
                     <td>
                         <span style="font-weight: 700; color: var(--primary); font-family: monospace; font-size: 0.95rem;">
@@ -117,6 +155,10 @@
                     <td style="color: var(--text-muted); font-size: 0.875rem;">
                         <i data-feather="calendar" style="width: 14px; height: 14px; margin-bottom: -2px; margin-right: 4px;"></i>
                         {{ \Carbon\Carbon::parse($pinjam->tgl_pinjam)->format('d M Y, H:i') }}
+                    </td>
+                    <td style="color: var(--text-muted); font-size: 0.875rem;">
+                        <i data-feather="clock" style="width: 14px; height: 14px; margin-bottom: -2px; margin-right: 4px;"></i>
+                        {{ $dueDate->format('d M Y') }}
                     </td>
                     <td>
                         <div style="display: flex; align-items: center; gap: 8px;">
@@ -140,11 +182,23 @@
                     </td>
                     <td>
                         @if($pinjam->status == '1')
-                            <span class="badge badge-warning">Dipinjam</span>
+                            @if($isLate)
+                                <span class="badge badge-danger">Terlambat</span>
+                            @else
+                                <span class="badge badge-warning">Dipinjam</span>
+                            @endif
                         @else
                             <span class="badge badge-success">Selesai</span>
                         @endif
                     </td>
+                    <td>
+                        @if($pinjam->status == '1' && $dendaRow > 0)
+                            <span style="color: #ef4444; font-weight: 700;">Rp {{ number_format($dendaRow, 0, ',', '.') }}</span>
+                        @else
+                            <span style="color: var(--text-muted);">-</span>
+                        @endif
+                    </td>
+                    @if(auth()->user()->role === 'admin')
                     <td style="text-align: center;">
                         @if($pinjam->status == '1')
                             <form action="{{ route('peminjaman.kembali', $pinjam->id_pinjam) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin buku ini sudah dikembalikan?');" style="margin: 0;">
@@ -157,10 +211,11 @@
                             <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">- Terkembali -</span>
                         @endif
                     </td>
+                    @endif
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="7" style="text-align: center; padding: 3rem 1rem;">
+                    <td colspan="10" style="text-align: center; padding: 3rem 1rem;">
                         <div style="color: var(--text-muted);">
                             <i data-feather="inbox" style="width: 44px; height: 44px; margin-bottom: 0.5rem; stroke-width: 1.5;"></i>
                             <p style="font-weight: 500;">Belum ada transaksi peminjaman tercatat.</p>

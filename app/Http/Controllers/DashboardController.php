@@ -11,15 +11,57 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $total_buku = DetailBuku::count();
-        $total_anggota = Anggota::count();
-        $total_dipinjam = DetailBuku::where('status', 'dipinjam')->count();
+        $user = auth()->user();
 
-        $peminjaman_terbaru = Peminjaman::with(['anggota', 'detailBuku.buku'])
-            ->orderBy('tgl_pinjam', 'desc')
-            ->paginate(10);
+        if ($user->role === 'admin') {
+            $total_buku = DetailBuku::count();
+            $total_anggota = Anggota::count();
+            $total_dipinjam = DetailBuku::where('status', 'dipinjam')->count();
 
-        return view('dashboard', compact('total_buku', 'total_anggota', 'total_dipinjam', 'peminjaman_terbaru'));
+            $peminjaman_terbaru = Peminjaman::with(['anggota', 'detailBuku.buku'])
+                ->orderBy('tgl_pinjam', 'desc')
+                ->paginate(10);
+
+            return view('dashboard', compact('total_buku', 'total_anggota', 'total_dipinjam', 'peminjaman_terbaru'));
+        } else {
+            // User Role Logic
+            $anggota = Anggota::where('nama_anggota', $user->name)->first();
+            $id_anggota = $anggota ? $anggota->id_anggota : null;
+
+            // Fetch user's transactions
+            $peminjaman_terbaru = Peminjaman::with(['anggota', 'detailBuku.buku'])
+                ->when($id_anggota, function($query) use ($id_anggota) {
+                    return $query->where('id_anggota', $id_anggota);
+                }, function($query) {
+                    return $query->whereRaw('1 = 0'); // Empty result if no mapping
+                })
+                ->orderBy('tgl_pinjam', 'desc')
+                ->paginate(10);
+
+            // Calculate active borrowings
+            $buku_sedang_dipinjam = Peminjaman::where('status', '1')
+                ->when($id_anggota, function($query) use ($id_anggota) {
+                    return $query->where('id_anggota', $id_anggota);
+                }, function($query) {
+                    return $query->whereRaw('1 = 0');
+                })->count();
+
+            // Calculate fines (assume 1000 per day after 7 days)
+            $total_denda = 0;
+            if ($id_anggota) {
+                $active_loans = Peminjaman::where('id_anggota', $id_anggota)
+                                          ->where('status', '1')->get();
+                foreach ($active_loans as $loan) {
+                    $dueDate = \Carbon\Carbon::parse($loan->tgl_pinjam)->addDays(7);
+                    if (now()->greaterThan($dueDate)) {
+                        $daysLate = now()->diffInDays($dueDate);
+                        $total_denda += ($daysLate * 1000);
+                    }
+                }
+            }
+
+            return view('dashboard', compact('peminjaman_terbaru', 'buku_sedang_dipinjam', 'total_denda'));
+        }
     }
 
     public function laporan(Request $request)

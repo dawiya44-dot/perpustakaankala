@@ -50,6 +50,10 @@ class DatabaseSeeder extends Seeder
             ['id_anggota' => 'a0003'],
             ['nama_anggota' => 'Andi Wijaya', 'kelas' => 'XII RPL', 'tempatlahir' => 'Surabaya', 'tgllahir' => '2006-08-10']
         );
+        DB::table('anggota')->updateOrInsert(
+            ['id_anggota' => 'a0004'],
+            ['nama_anggota' => 'User Siswa', 'kelas' => 'X TKJ 1', 'tempatlahir' => 'Semarang', 'tgllahir' => '2008-01-01']
+        );
 
         // Seed Buku
         DB::table('buku')->updateOrInsert(
@@ -62,7 +66,7 @@ class DatabaseSeeder extends Seeder
         );
 
         // Seed Detail Buku
-        DB::table('detail_buku')->updateOrInsert(['no_buku' => 'b001_01'], ['id_buku' => 'b001', 'status' => 'ada']);
+        DB::table('detail_buku')->updateOrInsert(['no_buku' => 'b001_01'], ['id_buku' => 'b001', 'status' => 'dipinjam']);
         DB::table('detail_buku')->updateOrInsert(['no_buku' => 'b001_02'], ['id_buku' => 'b001', 'status' => 'ada']);
         DB::table('detail_buku')->updateOrInsert(['no_buku' => 'b001_03'], ['id_buku' => 'b001', 'status' => 'dipinjam']);
         DB::table('detail_buku')->updateOrInsert(['no_buku' => 'b001_04'], ['id_buku' => 'b001', 'status' => 'ada']);
@@ -73,6 +77,12 @@ class DatabaseSeeder extends Seeder
         DB::table('peminjaman')->updateOrInsert(
             ['id_pinjam' => 'p0001'],
             ['tgl_pinjam' => '2026-09-28 08:53:14', 'id_anggota' => 'a0001', 'no_buku' => 'b001_03', 'status' => '1']
+        );
+        
+        // Past loan for User Siswa to simulate fine
+        DB::table('peminjaman')->updateOrInsert(
+            ['id_pinjam' => 'p0002'],
+            ['tgl_pinjam' => '2026-09-10 09:00:00', 'id_anggota' => 'a0004', 'no_buku' => 'b001_01', 'status' => '1']
         );
     }
 }
