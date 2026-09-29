@@ -70,6 +70,15 @@
             </div>
         </div>
 
+        <div class="form-group">
+            <label class="form-label" for="tgl_kembali">Tenggat Waktu Pengembalian (Due Date)</label>
+            <div style="position: relative;">
+                <input type="datetime-local" class="form-control" id="tgl_kembali" name="tgl_kembali" value="{{ old('tgl_kembali', $default_tgl_kembali) }}" required style="padding-left: 2.5rem;">
+                <i data-feather="clock" style="position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; color: var(--text-muted); pointer-events: none;"></i>
+            </div>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.4rem; margin-bottom: 0;">Secara default diatur 7 hari ke depan. Silakan sesuaikan jika perlu.</p>
+        </div>
+
         <div style="margin-top: 2.25rem; display: flex; gap: 1rem;">
             <button type="submit" class="btn btn-primary" style="flex: 1; padding: 0.85rem;">
                 <i data-feather="check-circle"></i> Proses Peminjaman

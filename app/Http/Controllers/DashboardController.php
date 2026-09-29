@@ -22,7 +22,18 @@ class DashboardController extends Controller
                 ->orderBy('tgl_pinjam', 'desc')
                 ->paginate(10);
 
-            return view('dashboard', compact('total_buku', 'total_anggota', 'total_dipinjam', 'peminjaman_terbaru'));
+            // Calculate total active unpaid fines for all members
+            $total_denda_global = 0;
+            $all_active_loans = Peminjaman::where('status', '1')->get();
+            foreach ($all_active_loans as $loan) {
+                $dueDate = \Carbon\Carbon::parse($loan->tgl_kembali);
+                if (now()->greaterThan($dueDate)) {
+                    $daysLate = now()->startOfDay()->diffInDays($dueDate->startOfDay());
+                    $total_denda_global += ($daysLate * 1000);
+                }
+            }
+
+            return view('dashboard', compact('total_buku', 'total_anggota', 'total_dipinjam', 'peminjaman_terbaru', 'total_denda_global'));
         } else {
             // User Role Logic
             $anggota = Anggota::where('nama_anggota', $user->name)->first();
@@ -46,15 +57,15 @@ class DashboardController extends Controller
                     return $query->whereRaw('1 = 0');
                 })->count();
 
-            // Calculate fines (assume 1000 per day after 7 days)
+            // Calculate active unpaid fines
             $total_denda = 0;
             if ($id_anggota) {
                 $active_loans = Peminjaman::where('id_anggota', $id_anggota)
                                           ->where('status', '1')->get();
                 foreach ($active_loans as $loan) {
-                    $dueDate = \Carbon\Carbon::parse($loan->tgl_pinjam)->addDays(7);
+                    $dueDate = \Carbon\Carbon::parse($loan->tgl_kembali);
                     if (now()->greaterThan($dueDate)) {
-                        $daysLate = now()->diffInDays($dueDate);
+                        $daysLate = now()->startOfDay()->diffInDays($dueDate->startOfDay());
                         $total_denda += ($daysLate * 1000);
                     }
                 }

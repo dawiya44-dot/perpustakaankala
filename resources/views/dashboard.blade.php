@@ -80,6 +80,17 @@
             <p>Total Transaksi Sirkulasi</p>
         </div>
     </div>
+
+    <!-- Stat 5: Denda Global -->
+    <div class="stat-card" style="--card-accent: #ef4444;">
+        <div class="stat-icon" style="--stat-icon-bg: #fef2f2; --stat-icon-color: #ef4444;">
+            <i data-feather="alert-triangle"></i>
+        </div>
+        <div class="stat-info">
+            <h3>Rp {{ number_format($total_denda_global ?? 0, 0, ',', '.') }}</h3>
+            <p>Denda Keterlambatan Aktif</p>
+        </div>
+    </div>
     @else
     <!-- Stat User 1: Buku Sedang Dipinjam -->
     <div class="stat-card" style="--card-accent: #f59e0b;">
@@ -141,10 +152,15 @@
             <tbody>
                 @forelse($peminjaman_terbaru as $pinjam)
                 @php
-                    $dueDate = \Carbon\Carbon::parse($pinjam->tgl_pinjam)->addDays(7);
-                    $isLate = now()->greaterThan($dueDate) && $pinjam->status == '1';
-                    $daysLate = $isLate ? now()->diffInDays($dueDate) : 0;
-                    $dendaRow = $daysLate * 1000;
+                    $dueDate = \Carbon\Carbon::parse($pinjam->tgl_kembali);
+                    if ($pinjam->status == '1') {
+                        $isLate = now()->greaterThan($dueDate);
+                        $daysLate = $isLate ? now()->startOfDay()->diffInDays($dueDate->startOfDay()) : 0;
+                        $dendaRow = $daysLate * 1000;
+                    } else {
+                        $isLate = false;
+                        $dendaRow = $pinjam->denda;
+                    }
                 @endphp
                 <tr>
                     <td>
@@ -192,7 +208,7 @@
                         @endif
                     </td>
                     <td>
-                        @if($pinjam->status == '1' && $dendaRow > 0)
+                        @if($dendaRow > 0)
                             <span style="color: #ef4444; font-weight: 700;">Rp {{ number_format($dendaRow, 0, ',', '.') }}</span>
                         @else
                             <span style="color: var(--text-muted);">-</span>
@@ -201,7 +217,7 @@
                     @if(auth()->user()->role === 'admin')
                     <td style="text-align: center;">
                         @if($pinjam->status == '1')
-                            <form action="{{ route('peminjaman.kembali', $pinjam->id_pinjam) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin buku ini sudah dikembalikan?');" style="margin: 0;">
+                            <form action="{{ route('peminjaman.kembali', $pinjam->id_pinjam) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin buku ini sudah dikembalikan?{{ $isLate ? '\n\n⚠️ PERHATIAN: Buku ini terlambat! Total Denda: Rp ' . number_format($dendaRow, 0, ',', '.') . '. Pastikan anggota telah membayar denda sebelum menyelesaikan transaksi.' : '' }}');" style="margin: 0;">
                                 @csrf
                                 <button type="submit" class="btn btn-secondary btn-sm" style="background: var(--secondary-light); color: #047857; border-color: rgba(16, 185, 129, 0.3);" title="Kembalikan Buku">
                                     <i data-feather="check-circle" style="width: 14px; height: 14px;"></i> Kembalikan

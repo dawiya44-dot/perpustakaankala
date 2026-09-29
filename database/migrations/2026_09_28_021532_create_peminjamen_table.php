@@ -14,6 +14,9 @@ return new class extends Migration
         Schema::create('peminjaman', function (Blueprint $table) {
             $table->string('id_pinjam', 15)->primary();
             $table->dateTime('tgl_pinjam');
+            $table->dateTime('tgl_kembali')->nullable();
+            $table->dateTime('tgl_dikembalikan')->nullable();
+            $table->integer('denda')->default(0);
             $table->string('id_anggota', 10);
             $table->string('no_buku', 20);
             $table->string('status', 20);

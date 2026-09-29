@@ -76,13 +76,13 @@ class DatabaseSeeder extends Seeder
         // Seed Peminjaman
         DB::table('peminjaman')->updateOrInsert(
             ['id_pinjam' => 'p0001'],
-            ['tgl_pinjam' => '2026-09-28 08:53:14', 'id_anggota' => 'a0001', 'no_buku' => 'b001_03', 'status' => '1']
+            ['tgl_pinjam' => '2026-09-28 08:53:14', 'tgl_kembali' => '2026-10-05 08:53:14', 'id_anggota' => 'a0001', 'no_buku' => 'b001_03', 'status' => '1']
         );
         
         // Past loan for User Siswa to simulate fine
         DB::table('peminjaman')->updateOrInsert(
             ['id_pinjam' => 'p0002'],
-            ['tgl_pinjam' => '2026-09-10 09:00:00', 'id_anggota' => 'a0004', 'no_buku' => 'b001_01', 'status' => '1']
+            ['tgl_pinjam' => '2026-09-10 09:00:00', 'tgl_kembali' => '2026-09-17 09:00:00', 'id_anggota' => 'a0004', 'no_buku' => 'b001_01', 'status' => '1']
         );
     }
 }
