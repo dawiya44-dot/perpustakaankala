@@ -44,9 +44,16 @@
             </div>
         </div>
 
-        <div class="form-group">
-            <label class="form-label" for="nama_anggota">Nama Lengkap Anggota</label>
-            <input type="text" class="form-control" id="nama_anggota" name="nama_anggota" value="{{ old('nama_anggota') }}" placeholder="Masukkan nama lengkap" required>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+                <label class="form-label" for="nama_anggota">Nama Lengkap Anggota</label>
+                <input type="text" class="form-control" id="nama_anggota" name="nama_anggota" value="{{ old('nama_anggota') }}" placeholder="Masukkan nama lengkap" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="no_wa">No. WhatsApp / HP</label>
+                <input type="text" class="form-control" id="no_wa" name="no_wa" value="{{ old('no_wa') }}" placeholder="Contoh: 08123456789">
+            </div>
         </div>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">

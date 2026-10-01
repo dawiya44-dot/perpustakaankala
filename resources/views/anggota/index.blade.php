@@ -43,6 +43,7 @@
                     <th style="width: 140px;">ID Anggota</th>
                     <th>Nama Anggota</th>
                     <th style="width: 120px;">Kelas</th>
+                    <th style="width: 150px;">No. WhatsApp</th>
                     <th>Tempat & Tgl Lahir</th>
                     @if(auth()->user()->role === 'admin')
                     <th style="width: 130px; text-align: center;">Aksi</th>
@@ -71,6 +72,23 @@
                         <span class="badge badge-info">
                             <i data-feather="bookmark" style="width: 12px; height: 12px;"></i> {{ $item->kelas }}
                         </span>
+                    </td>
+                    <td>
+                        @if($item->no_wa)
+                            @php
+                                $cleanWa = preg_replace('/[^0-9]/', '', $item->no_wa);
+                                if (substr($cleanWa, 0, 1) === '0') {
+                                    $cleanWa = '62' . substr($cleanWa, 1);
+                                } elseif (substr($cleanWa, 0, 1) === '8') {
+                                    $cleanWa = '62' . $cleanWa;
+                                }
+                            @endphp
+                            <a href="https://wa.me/{{ $cleanWa }}" target="_blank" style="color: #059669; font-weight: 600; text-decoration: none; font-size: 0.875rem; display: inline-flex; align-items: center; gap: 4px;">
+                                <i data-feather="message-circle" style="width: 14px; height: 14px;"></i> {{ $item->no_wa }}
+                            </a>
+                        @else
+                            <span style="color: var(--text-muted); font-size: 0.85rem;">-</span>
+                        @endif
                     </td>
                     <td style="color: var(--text-body);">
                         <div style="display: flex; align-items: center; gap: 6px;">

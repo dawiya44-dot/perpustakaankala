@@ -116,6 +116,97 @@
     @endif
 </div>
 
+<!-- Notifikasi Pengembalian Buku (khusus User/Anggota) -->
+@if(auth()->user()->role !== 'admin' && isset($notifikasi_peminjaman) && $notifikasi_peminjaman->count() > 0)
+<div class="card animate-fade-in" style="margin-bottom: 2rem; border-left: 4px solid var(--primary);">
+    <div class="card-header" style="border-bottom: 1px solid var(--border);">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <div style="background: var(--primary-light); color: var(--primary); padding: 8px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                <i data-feather="bell" style="width: 20px; height: 20px;"></i>
+            </div>
+            <div>
+                <h2 class="card-title" style="font-size: 1.15rem;">Notifikasi & Status Pengembalian Buku</h2>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 2px;">Pantau sisa waktu dan tenggat peminjaman aktif Anda</p>
+            </div>
+        </div>
+    </div>
+    <div style="padding: 1.25rem;">
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+            @foreach($notifikasi_peminjaman as $notif)
+                @if($notif->is_terlambat)
+                    <!-- Peringatan Terlambat (Teks & Box Merah) -->
+                    <div style="background-color: #fef2f2; border: 1px solid #fca5a5; border-radius: 10px; padding: 1rem 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                        <div style="display: flex; align-items: flex-start; gap: 0.85rem;">
+                            <div style="background: #ef4444; color: white; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;">
+                                <i data-feather="alert-triangle" style="width: 20px; height: 20px;"></i>
+                            </div>
+                            <div>
+                                <h4 style="color: #991b1b; font-weight: 700; margin: 0 0 4px 0; font-size: 1rem;">
+                                    ⚠️ PERINGATAN: Pengembalian Buku Terlambat!
+                                </h4>
+                                <p style="color: #b91c1c; font-size: 0.9rem; margin: 0 0 6px 0;">
+                                    Buku <strong>"{{ $notif->judul_buku }}"</strong> (No. Fisik: <code>{{ $notif->no_buku }}</code>) telah melewati batas tenggat pengembalian <strong>({{ $notif->dueDateFormatted }})</strong>.
+                                </p>
+                                <div style="display: flex; gap: 0.75rem; font-size: 0.825rem; font-weight: 600; color: #991b1b; flex-wrap: wrap;">
+                                    <span style="background: #fee2e2; padding: 2px 8px; border-radius: 4px;">
+                                        🚨 Terlambat: {{ $notif->hari_terlambat }} Hari
+                                    </span>
+                                    <span style="background: #fee2e2; padding: 2px 8px; border-radius: 4px; color: #dc2626;">
+                                        💸 Estimasi Denda: Rp {{ number_format($notif->denda, 0, ',', '.') }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <span style="display: inline-block; background: #dc2626; color: white; padding: 6px 14px; border-radius: 6px; font-weight: 600; font-size: 0.85rem;">
+                                Segera Kembalikan ke Petugas
+                            </span>
+                        </div>
+                    </div>
+                @elseif($notif->sisa_hari == 0)
+                    <!-- Batas Waktu Hari Ini (Kuning/Oranye) -->
+                    <div style="background-color: #fffbeb; border: 1px solid #fcd34d; border-radius: 10px; padding: 1rem 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                        <div style="display: flex; align-items: flex-start; gap: 0.85rem;">
+                            <div style="background: #f59e0b; color: white; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;">
+                                <i data-feather="clock" style="width: 20px; height: 20px;"></i>
+                            </div>
+                            <div>
+                                <h4 style="color: #92400e; font-weight: 700; margin: 0 0 4px 0; font-size: 1rem;">
+                                    ⏳ BATAS PENGEMBALIAN HARI INI!
+                                </h4>
+                                <p style="color: #b45309; font-size: 0.9rem; margin: 0;">
+                                    Buku <strong>"{{ $notif->judul_buku }}"</strong> (No. Fisik: <code>{{ $notif->no_buku }}</code>) jatuh tempo hari ini (<strong>{{ $notif->dueDateFormatted }}</strong>). Mohon segera kembalikan ke perpustakaan hari ini untuk menghindari denda keterlambatan.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                @else
+                    <!-- Status Normal (Biru/Hijau Info) -->
+                    <div style="background-color: #eff6ff; border: 1px solid #93c5fd; border-radius: 10px; padding: 1rem 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                        <div style="display: flex; align-items: flex-start; gap: 0.85rem;">
+                            <div style="background: #3b82f6; color: white; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;">
+                                <i data-feather="book-open" style="width: 20px; height: 20px;"></i>
+                            </div>
+                            <div>
+                                <h4 style="color: #1e40af; font-weight: 700; margin: 0 0 4px 0; font-size: 1rem;">
+                                    📖 Status Peminjaman Aktif
+                                </h4>
+                                <p style="color: #1d4ed8; font-size: 0.9rem; margin: 0 0 4px 0;">
+                                    Buku <strong>"{{ $notif->judul_buku }}"</strong> (No. Fisik: <code>{{ $notif->no_buku }}</code>) sedang Anda pinjam.
+                                </p>
+                                <span style="font-size: 0.825rem; color: #2563eb; font-weight: 600; background: #dbeafe; padding: 2px 8px; border-radius: 4px;">
+                                    🗓️ Tenggat Waktu: {{ $notif->dueDateFormatted }} (Sisa {{ $notif->sisa_hari }} hari lagi)
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+            @endforeach
+        </div>
+    </div>
+</div>
+@endif
+
 <!-- Recent Transactions Card -->
 <div class="card animate-fade-in">
     <div class="card-header" style="flex-wrap: wrap; gap: 1rem;">
@@ -145,7 +236,7 @@
                     <th>Status</th>
                     <th>Denda</th>
                     @if(auth()->user()->role === 'admin')
-                    <th style="text-align: center; width: 140px;">Aksi Pengembalian</th>
+                    <th style="text-align: center; width: 220px;">Aksi Sirkulasi & WA</th>
                     @endif
                 </tr>
             </thead>
@@ -160,6 +251,32 @@
                     } else {
                         $isLate = false;
                         $dendaRow = $pinjam->denda;
+                    }
+
+                    // Format WhatsApp message & link
+                    $namaAnggota = $pinjam->anggota->nama_anggota ?? 'Anggota';
+                    $judulBuku   = $pinjam->detailBuku->buku->judul_buku ?? 'Buku';
+                    $noFisik     = $pinjam->no_buku;
+                    $dueDateStr  = $dueDate->format('d-m-Y');
+                    $noWa        = $pinjam->anggota->no_wa ?? null;
+
+                    if ($noWa) {
+                        $cleanWa = preg_replace('/[^0-9]/', '', $noWa);
+                        if (substr($cleanWa, 0, 1) === '0') {
+                            $cleanWa = '62' . substr($cleanWa, 1);
+                        } elseif (substr($cleanWa, 0, 1) === '8') {
+                            $cleanWa = '62' . $cleanWa;
+                        }
+
+                        if ($isLate) {
+                            $pesanWa = "Halo {$namaAnggota}, ini adalah pengingat dari KalaPustaka bahwa peminjaman buku \"{$judulBuku}\" dengan nomor fisik {$noFisik} telah MELEWATI batas waktu pengembalian pada tanggal {$dueDateStr}. Mohon segera dikembalikan ke perpustakaan. Terima kasih.";
+                        } else {
+                            $pesanWa = "Halo {$namaAnggota}, ini adalah pengingat dari KalaPustaka bahwa buku \"{$judulBuku}\" dengan nomor fisik {$noFisik} harus dikembalikan pada tanggal {$dueDateStr}. Mohon dikembalikan tepat waktu untuk menghindari denda. Terima kasih.";
+                        }
+
+                        $waUrl = "https://wa.me/{$cleanWa}?text=" . rawurlencode($pesanWa);
+                    } else {
+                        $waUrl = null;
                     }
                 @endphp
                 <tr>
@@ -216,16 +333,28 @@
                     </td>
                     @if(auth()->user()->role === 'admin')
                     <td style="text-align: center;">
-                        @if($pinjam->status == '1')
-                            <form action="{{ route('peminjaman.kembali', $pinjam->id_pinjam) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin buku ini sudah dikembalikan?{{ $isLate ? '\n\n⚠️ PERHATIAN: Buku ini terlambat! Total Denda: Rp ' . number_format($dendaRow, 0, ',', '.') . '. Pastikan anggota telah membayar denda sebelum menyelesaikan transaksi.' : '' }}');" style="margin: 0;">
-                                @csrf
-                                <button type="submit" class="btn btn-secondary btn-sm" style="background: var(--secondary-light); color: #047857; border-color: rgba(16, 185, 129, 0.3);" title="Kembalikan Buku">
-                                    <i data-feather="check-circle" style="width: 14px; height: 14px;"></i> Kembalikan
-                                </button>
-                            </form>
-                        @else
-                            <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">- Terkembali -</span>
-                        @endif
+                        <div style="display: flex; justify-content: center; align-items: center; gap: 6px; flex-wrap: wrap;">
+                            @if($pinjam->status == '1')
+                                @if($waUrl)
+                                    <a href="{{ $waUrl }}" target="_blank" class="btn btn-sm" style="background: #25D366; color: white; border: none; font-weight: 600; padding: 0.35rem 0.65rem;" title="Kirim Pengingat WhatsApp ke {{ $namaAnggota }}">
+                                        <i data-feather="message-circle" style="width: 14px; height: 14px; margin-bottom: -2px;"></i> Kirim WA
+                                    </a>
+                                @else
+                                    <button class="btn btn-secondary btn-sm" disabled style="opacity: 0.55; cursor: not-allowed; padding: 0.35rem 0.65rem;" title="Nomor WhatsApp anggota belum diisi">
+                                        <i data-feather="message-circle" style="width: 14px; height: 14px; margin-bottom: -2px;"></i> No WA (-)
+                                    </button>
+                                @endif
+
+                                <form action="{{ route('peminjaman.kembali', $pinjam->id_pinjam) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin buku ini sudah dikembalikan?{{ $isLate ? '\n\n⚠️ PERHATIAN: Buku ini terlambat! Total Denda: Rp ' . number_format($dendaRow, 0, ',', '.') . '. Pastikan anggota telah membayar denda sebelum menyelesaikan transaksi.' : '' }}');" style="margin: 0;">
+                                    @csrf
+                                    <button type="submit" class="btn btn-secondary btn-sm" style="background: var(--secondary-light); color: #047857; border-color: rgba(16, 185, 129, 0.3);" title="Kembalikan Buku">
+                                        <i data-feather="check-circle" style="width: 14px; height: 14px;"></i> Kembalikan
+                                    </button>
+                                </form>
+                            @else
+                                <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">- Terkembali -</span>
+                            @endif
+                        </div>
                     </td>
                     @endif
                 </tr>

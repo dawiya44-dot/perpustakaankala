@@ -57,21 +57,46 @@ class DashboardController extends Controller
                     return $query->whereRaw('1 = 0');
                 })->count();
 
-            // Calculate active unpaid fines
+            // Calculate active unpaid fines & notifications for user
             $total_denda = 0;
+            $notifikasi_peminjaman = collect();
+
             if ($id_anggota) {
-                $active_loans = Peminjaman::where('id_anggota', $id_anggota)
-                                          ->where('status', '1')->get();
-                foreach ($active_loans as $loan) {
+                $active_loans = Peminjaman::with(['detailBuku.buku'])
+                    ->where('id_anggota', $id_anggota)
+                    ->where('status', '1')
+                    ->orderBy('tgl_kembali', 'asc')
+                    ->get();
+
+                $today = \Carbon\Carbon::now()->startOfDay();
+
+                $notifikasi_peminjaman = $active_loans->map(function ($loan) use ($today, &$total_denda) {
                     $dueDate = \Carbon\Carbon::parse($loan->tgl_kembali);
-                    if (now()->greaterThan($dueDate)) {
-                        $daysLate = now()->startOfDay()->diffInDays($dueDate->startOfDay());
-                        $total_denda += ($daysLate * 1000);
-                    }
-                }
+                    $dueStart = $dueDate->copy()->startOfDay();
+
+                    $isTerlambat = \Carbon\Carbon::now()->greaterThan($dueDate);
+                    $hariTerlambat = $isTerlambat ? $today->diffInDays($dueStart) : 0;
+                    $sisaHari = !$isTerlambat ? $today->diffInDays($dueStart) : 0;
+                    $dendaEstimasi = $hariTerlambat * 1000;
+
+                    $total_denda += $dendaEstimasi;
+
+                    return (object) [
+                        'id_pinjam'        => $loan->id_pinjam,
+                        'judul_buku'       => $loan->detailBuku->buku->judul_buku ?? 'Buku Tidak Ditemukan',
+                        'no_buku'          => $loan->no_buku,
+                        'tgl_pinjam'       => $loan->tgl_pinjam,
+                        'tgl_kembali'      => $loan->tgl_kembali,
+                        'dueDateFormatted' => $dueDate->format('d M Y, H:i'),
+                        'is_terlambat'     => $isTerlambat,
+                        'hari_terlambat'   => $hariTerlambat,
+                        'sisa_hari'        => $sisaHari,
+                        'denda'            => $dendaEstimasi,
+                    ];
+                });
             }
 
-            return view('dashboard', compact('peminjaman_terbaru', 'buku_sedang_dipinjam', 'total_denda'));
+            return view('dashboard', compact('peminjaman_terbaru', 'buku_sedang_dipinjam', 'total_denda', 'notifikasi_peminjaman'));
         }
     }
 
