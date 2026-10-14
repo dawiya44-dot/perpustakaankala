@@ -29,6 +29,13 @@ class Anggota extends Model
     protected $guarded = [];
 
     /**
+     * Cast tipe data kolom secara otomatis.
+     */
+    protected $casts = [
+        'tgllahir' => 'date',
+    ];
+
+    /**
      * Relasi ke data peminjaman anggota.
      */
     public function peminjaman()
