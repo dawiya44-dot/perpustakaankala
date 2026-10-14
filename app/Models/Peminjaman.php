@@ -31,6 +31,16 @@ class Peminjaman extends Model
     protected $guarded = [];
 
     /**
+     * Cast tipe data kolom secara otomatis.
+     */
+    protected $casts = [
+        'tgl_pinjam'       => 'datetime',
+        'tgl_kembali'      => 'datetime',
+        'tgl_dikembalikan' => 'datetime',
+        'denda'            => 'integer',
+    ];
+
+    /**
      * Relasi ke data anggota yang meminjam.
      */
     public function anggota()
