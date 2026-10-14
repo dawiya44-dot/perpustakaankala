@@ -7,18 +7,31 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AnggotaController;
 use App\Http\Controllers\BukuController;
 
-// Auth Routes
+/*
+|--------------------------------------------------------------------------
+| Web Routes - KalaPustaka
+|--------------------------------------------------------------------------
+| Semua route aplikasi perpustakaan KalaPustaka didefinisikan di sini.
+| Route autentikasi bersifat publik, sedangkan route utama dilindungi
+| middleware 'auth' agar hanya pengguna yang sudah login yang bisa akses.
+|--------------------------------------------------------------------------
+*/
+
+// ─── Autentikasi ──────────────────────────────────────────────────────────────
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register'])->name('register.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Protected Routes
+// ─── Route Terproteksi (Wajib Login) ──────────────────────────────────────────
 Route::middleware(['auth'])->group(function () {
+
+    // Dashboard
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
-    
+
     // Peminjaman Routes
+    Route::get('/peminjaman', [PeminjamanController::class, 'index'])->name('peminjaman.index');
     Route::get('/peminjaman/baru', [PeminjamanController::class, 'create'])->name('peminjaman.create');
     Route::post('/peminjaman', [PeminjamanController::class, 'store'])->name('peminjaman.store');
     Route::post('/peminjaman/{id}/kembali', [PeminjamanController::class, 'kembali'])->name('peminjaman.kembali');
