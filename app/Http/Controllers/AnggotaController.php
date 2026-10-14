@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 
 class AnggotaController extends Controller
 {
+    /**
+     * Menampilkan daftar anggota dengan fitur pencarian dan pagination.
+     */
     public function index(Request $request)
     {
         $search = $request->input('search');
@@ -18,18 +21,22 @@ class AnggotaController extends Controller
         return view('anggota.index', compact('anggota', 'search'));
     }
 
+    /**
+     * Menampilkan form tambah anggota baru dengan auto-generate ID.
+     */
     public function create()
     {
-        $last_anggota = Anggota::orderBy('id_anggota', 'desc')->first();
-        $next_id = 'a0001';
-        if ($last_anggota) {
-            $num = (int) preg_replace('/[^0-9]/', '', $last_anggota->id_anggota);
-            $next_id = 'a' . str_pad($num + 1, 4, '0', STR_PAD_LEFT);
-        }
+        $maxNum = Anggota::all()->map(function ($a) {
+            return (int) preg_replace('/[^0-9]/', '', $a->id_anggota);
+        })->max() ?? 0;
+        $next_id = 'a' . str_pad($maxNum + 1, 4, '0', STR_PAD_LEFT);
 
         return view('anggota.create', compact('next_id'));
     }
 
+    /**
+     * Menyimpan data anggota baru ke database.
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -57,20 +64,26 @@ class AnggotaController extends Controller
         }
     }
 
+    /**
+     * Menampilkan form edit data anggota berdasarkan ID.
+     */
     public function editById($id)
     {
         $anggota = Anggota::findOrFail($id);
         return view('anggota.edit', compact('anggota'));
     }
 
+    /**
+     * Memperbarui data anggota yang sudah ada.
+     */
     public function update(Request $request, $id)
     {
         $request->validate([
             'nama_anggota' => 'required|max:50',
-            'kelas' => 'required|max:20',
-            'no_wa' => 'nullable|string|max:20',
-            'tempatlahir' => 'required|max:30',
-            'tgllahir' => 'required|date',
+            'kelas'        => 'nullable|string|max:20',
+            'no_wa'        => 'nullable|string|max:20',
+            'tempatlahir'  => 'nullable|string|max:30',
+            'tgllahir'     => 'nullable|date',
         ]);
 
         try {
@@ -89,6 +102,9 @@ class AnggotaController extends Controller
         }
     }
 
+    /**
+     * Menghapus data anggota dari database.
+     */
     public function destroy($id)
     {
         $anggota = Anggota::findOrFail($id);
