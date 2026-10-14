@@ -90,5 +90,18 @@ Aplikasi ini menggunakan 5 tabel utama yang saling terelasi:
 
 ---
 
+## 🛠️ Tech Stack
+
+| Layer | Teknologi |
+| :--- | :--- |
+| **Backend** | PHP 8.x, Laravel 11.x |
+| **Frontend** | Blade Templates, Vanilla CSS (custom design system) |
+| **Database** | MySQL (via XAMPP) / SQLite (untuk development) |
+| **Icons** | Feather Icons |
+| **Font** | Google Fonts - Plus Jakarta Sans |
+| **Server** | Apache (XAMPP) / Laravel Artisan Serve |
+
+---
+
 ## 📄 Lisensi
 Proyek ini dibuat untuk keperluan tugas akademik Sistem Informasi Perpustakaan KalaPustaka.
