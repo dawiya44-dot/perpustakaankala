@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="KalaPustaka - Sistem Informasi Perpustakaan Terpadu untuk pengelolaan buku, anggota, dan transaksi peminjaman.">
+    <meta name="author" content="KalaPustaka">
     <title>@yield('title') - KalaPustaka</title>
     <!-- Google Fonts Plus Jakarta Sans & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -32,6 +34,11 @@
             <li>
                 <a href="{{ route('buku.index') }}" class="{{ request()->routeIs('buku.*') ? 'active' : '' }}">
                     <i data-feather="book" style="width: 18px; height: 18px;"></i> Data Buku
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('peminjaman.index') }}" class="{{ request()->routeIs('peminjaman.index') ? 'active' : '' }}">
+                    <i data-feather="repeat" style="width: 18px; height: 18px;"></i> Transaksi
                 </a>
             </li>
             @if(auth()->user()->role === 'admin')
