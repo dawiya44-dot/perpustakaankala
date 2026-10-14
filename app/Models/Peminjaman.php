@@ -55,4 +55,28 @@ class Peminjaman extends Model
     {
         return $this->belongsTo(DetailBuku::class, 'no_buku', 'no_buku');
     }
+
+    /**
+     * Mengecek apakah peminjaman ini sudah melewati tenggat waktu pengembalian.
+     */
+    public function isLate(): bool
+    {
+        return $this->status === '1' && \Carbon\Carbon::now()->greaterThan($this->tgl_kembali);
+    }
+
+    /**
+     * Menghitung estimasi denda keterlambatan dalam rupiah (Rp 1.000/hari).
+     */
+    public function hitungDenda(): int
+    {
+        if (!$this->isLate()) {
+            return 0;
+        }
+
+        $today        = \Carbon\Carbon::today();
+        $dueDateStart = \Carbon\Carbon::parse($this->tgl_kembali)->startOfDay();
+        $daysLate     = max(0, (int) $dueDateStart->diffInDays($today));
+
+        return $daysLate * 1000;
+    }
 }
