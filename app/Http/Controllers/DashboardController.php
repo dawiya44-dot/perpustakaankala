@@ -9,6 +9,11 @@ use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
+    /**
+     * Menampilkan halaman dashboard.
+     * Admin melihat statistik global; anggota melihat data peminjaman pribadi
+     * beserta notifikasi status pengembalian buku aktif.
+     */
     public function index()
     {
         $user = auth()->user();
@@ -24,11 +29,14 @@ class DashboardController extends Controller
 
             // Calculate total active unpaid fines for all members
             $total_denda_global = 0;
+            $today = \Carbon\Carbon::today();
             $all_active_loans = Peminjaman::where('status', '1')->get();
             foreach ($all_active_loans as $loan) {
                 $dueDate = \Carbon\Carbon::parse($loan->tgl_kembali);
-                if (now()->greaterThan($dueDate)) {
-                    $daysLate = now()->startOfDay()->diffInDays($dueDate->startOfDay());
+                $dueDateStart = $dueDate->copy()->startOfDay();
+                if (\Carbon\Carbon::now()->greaterThan($dueDate)) {
+                    // diffInDays(target): target - self => harus dueDateStart->diffInDays(today) agar positif
+                    $daysLate = max(0, (int) $dueDateStart->diffInDays($today));
                     $total_denda_global += ($daysLate * 1000);
                 }
             }
@@ -68,15 +76,17 @@ class DashboardController extends Controller
                     ->orderBy('tgl_kembali', 'asc')
                     ->get();
 
-                $today = \Carbon\Carbon::now()->startOfDay();
+                $today = \Carbon\Carbon::today(); // awal hari ini sebagai baseline tetap
 
                 $notifikasi_peminjaman = $active_loans->map(function ($loan) use ($today, &$total_denda) {
                     $dueDate = \Carbon\Carbon::parse($loan->tgl_kembali);
                     $dueStart = $dueDate->copy()->startOfDay();
 
                     $isTerlambat = \Carbon\Carbon::now()->greaterThan($dueDate);
-                    $hariTerlambat = $isTerlambat ? $today->diffInDays($dueStart) : 0;
-                    $sisaHari = !$isTerlambat ? $today->diffInDays($dueStart) : 0;
+                    // diffInDays(target): target - self => dueStart->diffInDays(today) agar positif ketika terlambat
+                    $hariTerlambat = $isTerlambat ? max(0, (int) $dueStart->diffInDays($today)) : 0;
+                    // Sisa hari: dueStart - today (positif ketika belum terlambat)
+                    $sisaHari = !$isTerlambat ? max(0, (int) $today->diffInDays($dueStart)) : 0;
                     $dendaEstimasi = $hariTerlambat * 1000;
 
                     $total_denda += $dendaEstimasi;
@@ -100,6 +110,9 @@ class DashboardController extends Controller
         }
     }
 
+    /**
+     * Menampilkan halaman laporan peminjaman berdasarkan filter bulan dan tahun.
+     */
     public function laporan(Request $request)
     {
         $bulan = $request->input('bulan', date('m'));
@@ -114,6 +127,10 @@ class DashboardController extends Controller
         return view('laporan', compact('peminjaman', 'bulan', 'tahun'));
     }
 
+    /**
+     * Mengekspor data laporan peminjaman ke format CSV dengan encoding UTF-8 BOM
+     * agar Excel dapat membaca karakter khusus dengan benar.
+     */
     public function exportExcel(Request $request)
     {
         $bulan = $request->input('bulan', date('m'));
