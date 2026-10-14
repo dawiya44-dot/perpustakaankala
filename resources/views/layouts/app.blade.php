@@ -67,7 +67,7 @@
                 
                 <form action="{{ route('logout') }}" method="POST" style="margin: 0;">
                     @csrf
-                    <button type="submit" class="btn btn-secondary btn-sm" style="color: var(--danger); border-color: rgba(239, 68, 68, 0.2); background: var(--danger-light);" title="Logout">
+                    <button type="submit" class="btn btn-secondary btn-sm" style="color: var(--danger); border-color: rgba(239, 68, 68, 0.2); background: var(--danger-light);" title="Keluar dari sesi">
                         <i data-feather="log-out" style="width: 16px; height: 16px;"></i> Logout
                     </button>
                 </form>
