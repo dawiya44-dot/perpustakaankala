@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\DB;
 
 class BukuController extends Controller
 {
+    /**
+     * Menampilkan daftar buku dengan fitur pencarian dan pagination.
+     */
     public function index(Request $request)
     {
         $search = $request->input('search');
@@ -21,6 +24,9 @@ class BukuController extends Controller
         return view('buku.index', compact('buku', 'search'));
     }
 
+    /**
+     * Menampilkan form tambah buku baru dengan auto-generate ID.
+     */
     public function create()
     {
         $last_buku = Buku::orderBy('id_buku', 'desc')->first();
@@ -33,6 +39,9 @@ class BukuController extends Controller
         return view('buku.create', compact('next_id'));
     }
 
+    /**
+     * Menyimpan data buku baru dan auto-generate eksemplar fisik di detail_buku.
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -77,12 +86,18 @@ class BukuController extends Controller
         }
     }
 
+    /**
+     * Menampilkan form edit data buku berdasarkan ID.
+     */
     public function editById($id)
     {
         $buku = Buku::findOrFail($id);
         return view('buku.edit', compact('buku'));
     }
 
+    /**
+     * Memperbarui data buku dan sinkronisasi eksemplar fisik jika jumlah berubah.
+     */
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -124,6 +139,9 @@ class BukuController extends Controller
         }
     }
 
+    /**
+     * Menghapus data buku beserta eksemplar fisiknya.
+     */
     public function destroy($id)
     {
         $buku = Buku::findOrFail($id);
