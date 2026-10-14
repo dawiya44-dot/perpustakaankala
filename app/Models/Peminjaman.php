@@ -79,4 +79,20 @@ class Peminjaman extends Model
 
         return $daysLate * 1000;
     }
+
+    /**
+     * Scope untuk memfilter transaksi yang masih aktif (status dipinjam).
+     */
+    public function scopeAktif($query)
+    {
+        return $query->where('status', '1');
+    }
+
+    /**
+     * Scope untuk memfilter transaksi yang sudah selesai (buku dikembalikan).
+     */
+    public function scopeSelesai($query)
+    {
+        return $query->where('status', '0');
+    }
 }
