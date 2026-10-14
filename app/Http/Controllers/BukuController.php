@@ -49,7 +49,7 @@ class BukuController extends Controller
             'judul_buku' => 'required|max:100',
             'pengarang' => 'required|max:50',
             'penerbit' => 'required|max:50',
-            'tahun_terbit' => 'required|integer',
+            'tahun_terbit' => 'required|integer|min:1900|max:' . date('Y'),
             'jumlah' => 'required|integer|min:1',
         ]);
 
