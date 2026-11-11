@@ -41,7 +41,7 @@
 
             <div class="form-group">
                 <label class="form-label" for="kelas">Kelas / Tingkat</label>
-                <input type="text" class="form-control" id="kelas" name="kelas" value="{{ old('kelas', $anggota->kelas) }}" required>
+                <input type="text" class="form-control" id="kelas" name="kelas" value="{{ old('kelas', $anggota->kelas) }}" placeholder="Contoh: X RPL 1">
             </div>
         </div>
 
@@ -60,12 +60,12 @@
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
             <div class="form-group">
                 <label class="form-label" for="tempatlahir">Tempat Lahir</label>
-                <input type="text" class="form-control" id="tempatlahir" name="tempatlahir" value="{{ old('tempatlahir', $anggota->tempatlahir) }}" required>
+                <input type="text" class="form-control" id="tempatlahir" name="tempatlahir" value="{{ old('tempatlahir', $anggota->tempatlahir) }}" placeholder="Contoh: Jakarta">
             </div>
             
             <div class="form-group">
                 <label class="form-label" for="tgllahir">Tanggal Lahir</label>
-                <input type="date" class="form-control" id="tgllahir" name="tgllahir" value="{{ old('tgllahir', $anggota->tgllahir) }}" required>
+                <input type="date" class="form-control" id="tgllahir" name="tgllahir" value="{{ old('tgllahir', $anggota->tgllahir) }}">
             </div>
         </div>
 

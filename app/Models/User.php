@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+use App\Models\Anggota;
+
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
@@ -22,6 +24,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**
@@ -45,5 +48,33 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * The "booted" method of the model.
+     */
+    protected static function booted(): void
+    {
+        static::created(function (User $user) {
+            // Jangan buat anggota duplikat jika nama sudah ada
+            if (!Anggota::where('nama_anggota', $user->name)->exists()) {
+                $maxNum = Anggota::all()->map(function ($a) {
+                    return (int) preg_replace('/[^0-9]/', '', $a->id_anggota);
+                })->max() ?? 0;
+
+                $nextId = 'a' . str_pad($maxNum + 1, 4, '0', STR_PAD_LEFT);
+
+                Anggota::create([
+                    'id_anggota'   => $nextId,
+                    'nama_anggota' => substr($user->name, 0, 50),
+                    // kelas, tempatlahir, tgllahir dibiarkan null agar admin
+                    // dapat melengkapinya melalui form Edit Data Anggota
+                    'kelas'        => null,
+                    'tempatlahir'  => null,
+                    'tgllahir'     => null,
+                    'no_wa'        => null,
+                ]);
+            }
+        });
     }
 }
