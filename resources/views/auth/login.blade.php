@@ -40,7 +40,7 @@
                 </div>
             @endif
 
-            <form action="{{ route('login.post') }}" method="POST" id="loginForm">
+            <form action="{{ route('login.post') }}" method="POST" id="loginForm" autocomplete="off">
                 @csrf
                 <div class="form-group">
                     <label class="form-label" for="email">Alamat Email</label>
