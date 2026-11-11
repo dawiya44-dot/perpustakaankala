@@ -102,7 +102,7 @@
                             <a href="{{ route('anggota.edit', $item->id_anggota) }}" class="btn btn-secondary btn-sm btn-icon-only" title="Edit Anggota">
                                 <i data-feather="edit-2" style="width: 16px; height: 16px; color: var(--primary);"></i>
                             </a>
-                            <form action="{{ route('anggota.destroy', $item->id_anggota) }}" method="POST" style="display:inline;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data anggota ini?');">
+                            <form action="{{ route('anggota.destroy', $item->id_anggota) }}" method="POST" style="display:inline;" onsubmit="return confirm('Hapus anggota {{ addslashes($item->nama_anggota) }}?\n\nData anggota yang dihapus tidak dapat dikembalikan.');">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-secondary btn-sm btn-icon-only" style="background: var(--danger-light); border-color: rgba(239, 68, 68, 0.2);" title="Hapus Anggota">
