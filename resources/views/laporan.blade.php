@@ -100,7 +100,8 @@
 
         @media print {
             @page {
-                margin: 0;
+                size: A4 portrait;
+                margin: 1.5cm 1.5cm 1.5cm 1.5cm;
             }
             .filter-toolbar {
                 display: none !important;
@@ -108,12 +109,17 @@
             body {
                 background: white !important;
                 padding: 0 !important;
+                margin: 0 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
             }
             .paper-sheet {
                 box-shadow: none !important;
                 border: none !important;
-                padding: 2cm 2cm !important;
+                padding: 0 !important;
+                margin: 0 !important;
                 max-width: 100% !important;
+                border-radius: 0 !important;
             }
         }
     </style>
