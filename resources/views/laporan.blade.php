@@ -147,11 +147,15 @@
             </a>
         </form>
 
-        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;">
             <!-- Print PDF Button -->
             <button class="btn btn-primary" onclick="window.print()" style="background: #4f46e5; border-color: #4f46e5;">
                 <i data-feather="printer"></i> Cetak Laporan (PDF)
             </button>
+            <span style="font-size: 0.75rem; color: var(--text-muted); max-width: 220px; line-height: 1.4;">
+                <i data-feather="info" style="width: 12px; height: 12px; display: inline; margin-bottom: -1px;"></i>
+                Saat dialog print muncul, matikan opsi <strong>"Headers and footers"</strong> agar PDF bersih.
+            </span>
         </div>
     </div>
 
