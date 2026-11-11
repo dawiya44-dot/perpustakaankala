@@ -93,13 +93,13 @@
                     @if(auth()->user()->role === 'admin')
                     <td style="text-align: center;">
                         <div style="display: flex; justify-content: center; gap: 6px;">
-                            <a href="{{ route('buku.edit', $item->id_buku) }}" class="btn btn-secondary btn-sm btn-icon-only" title="Edit Buku">
+                            <a href="{{ route('buku.edit', $item->id_buku) }}" class="btn btn-secondary btn-sm btn-icon-only" title="Edit Buku" aria-label="Edit buku {{ $item->judul_buku }}">
                                 <i data-feather="edit-2" style="width: 16px; height: 16px; color: var(--primary);"></i>
                             </a>
                             <form action="{{ route('buku.destroy', $item->id_buku) }}" method="POST" style="display:inline;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus buku ini?');">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-secondary btn-sm btn-icon-only" style="background: var(--danger-light); border-color: rgba(239, 68, 68, 0.2);" title="Hapus Buku">
+                                <button type="submit" class="btn btn-secondary btn-sm btn-icon-only" style="background: var(--danger-light); border-color: rgba(239, 68, 68, 0.2);" title="Hapus Buku" aria-label="Hapus buku {{ $item->judul_buku }}">
                                     <i data-feather="trash-2" style="width: 16px; height: 16px; color: var(--danger);"></i>
                                 </button>
                             </form>
