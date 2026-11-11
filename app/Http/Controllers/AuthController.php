@@ -39,18 +39,44 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed',
-            'role' => 'required|string|in:admin,user',
+            'name'        => 'required|string|max:255',
+            'email'       => 'required|string|email|max:255|unique:users',
+            'password'    => 'required|string|min:6|confirmed',
+            'kelas'       => 'nullable|string|max:20',
+            'no_wa'       => 'nullable|string|max:20',
+            'tempatlahir' => 'nullable|string|max:30',
+            'tgllahir'    => 'nullable|date',
+        ], [
+            'name.required'      => 'Nama lengkap wajib diisi.',
+            'name.max'           => 'Nama lengkap maksimal 255 karakter.',
+            'email.required'     => 'Alamat email wajib diisi.',
+            'email.email'        => 'Format alamat email tidak valid.',
+            'email.unique'       => 'Email ini sudah terdaftar. Silakan gunakan email lain.',
+            'password.required'  => 'Password wajib diisi.',
+            'password.min'       => 'Password minimal harus 6 karakter.',
+            'password.confirmed' => 'Konfirmasi password tidak cocok. Pastikan kedua password sama.',
+            'kelas.max'          => 'Kelas maksimal 20 karakter.',
+            'no_wa.max'          => 'Nomor WhatsApp maksimal 20 karakter.',
+            'tempatlahir.max'    => 'Tempat lahir maksimal 30 karakter.',
+            'tgllahir.date'      => 'Format tanggal lahir tidak valid.',
         ]);
 
+        // Semua pendaftar baru otomatis mendapatkan role 'user'
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
+            'name'     => $request->name,
+            'email'    => $request->email,
             'password' => Hash::make($request->password),
-            'role' => $request->role,
+            'role'     => 'user',
         ]);
+
+        // Setelah user & anggota terbuat, update data anggota dengan field lengkap dari form
+        \App\Models\Anggota::where('nama_anggota', $user->name)
+            ->update([
+                'kelas'       => $request->kelas       ?: null,
+                'no_wa'       => $request->no_wa       ?: null,
+                'tempatlahir' => $request->tempatlahir ?: null,
+                'tgllahir'    => $request->tgllahir    ?: null,
+            ]);
 
         Auth::login($user);
 
