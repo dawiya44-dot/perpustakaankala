@@ -65,21 +65,6 @@
                 </button>
             </form>
 
-            <!-- Quick Demo Login Buttons for Teacher / Evaluator -->
-            <div style="margin-top: 1.25rem; padding: 0.85rem; background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.2); border-radius: var(--radius-sm); text-align: center;">
-                <p style="font-size: 0.8rem; font-weight: 700; color: var(--primary); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">
-                    ⚡ Akses Cepat Uji Coba Demo:
-                </p>
-                <div style="display: flex; gap: 0.5rem;">
-                    <button type="button" onclick="fillLogin('admin@kalapustaka.com', 'password')" class="btn btn-sm" style="flex: 1; background: var(--primary); color: white; font-size: 0.8rem; padding: 0.4rem 0.5rem;">
-                        🛡️ Login Admin
-                    </button>
-                    <button type="button" onclick="fillLogin('user@kalapustaka.com', 'password')" class="btn btn-sm" style="flex: 1; background: var(--secondary); color: white; font-size: 0.8rem; padding: 0.4rem 0.5rem;">
-                        👤 Login User
-                    </button>
-                </div>
-            </div>
-            
             <div style="text-align: center; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border);">
                 <p style="color: var(--text-muted); font-size: 0.9rem;">
                     Belum memiliki akun? <a href="{{ route('register') }}" style="color: var(--primary); font-weight: 700; text-decoration: none;">Daftar Akun Baru</a>
@@ -90,11 +75,6 @@
 
     <script>
         feather.replace();
-        function fillLogin(email, password) {
-            document.getElementById('email').value = email;
-            document.getElementById('password').value = password;
-            document.getElementById('loginForm').submit();
-        }
     </script>
 </body>
 </html>
