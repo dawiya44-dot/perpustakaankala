@@ -121,6 +121,13 @@
                 max-width: 100% !important;
                 border-radius: 0 !important;
             }
+            /* Kurangi margin tanda tangan agar tidak memicu halaman kosong */
+            .sign-area {
+                margin-top: 1.5rem !important;
+            }
+            .sign-space {
+                height: 40px !important;
+            }
         }
     </style>
 </head>
@@ -208,13 +215,13 @@
             </tbody>
         </table>
 
-        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 3rem; font-size: 0.875rem;">
+        <div class="sign-area" style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 3rem; font-size: 0.875rem;">
             <div>
                 <p style="color: #64748b; font-size: 0.8rem;">Dokumen ini dicetak secara otomatis melalui Sistem KalaPustaka.</p>
             </div>
             <div style="text-align: center; width: 220px;">
                 <p>Dicetak pada: {{ date('d-m-Y H:i') }}</p>
-                <div style="height: 60px;"></div>
+                <div class="sign-space" style="height: 60px;"></div>
                 <p style="border-top: 1px solid #000; padding-top: 4px;"><strong>Admin Perpustakaan</strong></p>
             </div>
         </div>
