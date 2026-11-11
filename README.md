@@ -1,19 +1,19 @@
 # 📚 KalaPustaka - Sistem Informasi Manajemen Perpustakaan Terpadu
 
-**KalaPustaka** adalah aplikasi Sistem Informasi Perpustakaan berbasis web modern yang dibangun menggunakan framework **Laravel**. Aplikasi ini dirancang untuk mempermudah pengelolaan koleksi buku, data anggota, transaksi sirkulasi peminjaman & pengembalian buku, serta pembuatan laporan terperinci.
+**KalaPustaka** adalah aplikasi Sistem Informasi Perpustakaan berbasis web modern yang dibangun menggunakan framework **Laravel**. Aplikasi ini dirancang untuk mempermudah pengelolaan koleksi buku, data anggota, transaksi sirkulasi peminjaman dan pengembalian buku, serta pembuatan laporan terperinci.
 
 ---
 
 ## ✨ Fitur Utama
 
-1. **Autentikasi & Multi-Peran (2 Peran: Admin & User)**
-   - **Admin (Petugas Perpustakaan)**: Memiliki akses penuh terhadap manajemen buku (CRUD), data anggota (CRUD), transaksi peminjaman & pengembalian buku, serta cetak laporan (PDF) dan ekspor laporan (Excel).
-   - **User (Anggota / Siswa)**: Memiliki akses menjelajah katalog buku, mencari buku, melihat data anggota, dan melakukan pengajuan transaksi peminjaman.
+1. **Autentikasi dan Multi-Peran (2 Peran: Admin & User)**
+   - **Admin (Petugas Perpustakaan)**: Memiliki akses penuh terhadap manajemen buku (CRUD), data anggota (CRUD), transaksi peminjaman dan pengembalian buku, serta cetak laporan (PDF).
+   - **User (Anggota / Siswa)**: Memiliki akses menjelajah katalog buku, mencari buku, dan transaksi peminjaman.
 2. **CRUD Lengkap Data Buku & Fisik Buku (`detail_buku`)**
    - Otomatis membuat nomor fisik eksemplar buku (`BK001_01`, `BK001_02`, dst.) saat buku baru ditambahkan.
 3. **CRUD Lengkap Data Anggota**
    - Otomatis menghasilkan kode unik ID Anggota (`a0001`, `a0002`, dst.) dan mengelola biodata keanggotaan.
-4. **Sirkulasi Peminjaman & Pengembalian Buku**
+4. **Sirkulasi Peminjaman dan Pengembalian Buku**
    - Pencatatan peminjaman secara *real-time* dan fitur *Kembalikan Buku* yang memulihkan stok fisik eksemplar secara otomatis.
 5. **Pencarian (Search) & Pagination**
    - Fitur pencarian interaktif untuk Katalog Buku, Data Anggota, dan Transaksi.
@@ -35,10 +35,10 @@ Aplikasi telah dilengkapi *database seeder* dengan dua akun sampel siap pakai:
 
 | Peran (Role) | Email | Password | Hak Akses |
 | :--- | :--- | :--- | :--- |
-| **Admin** | `admin@kalapustaka.com` | `password` | Akses Penuh (CRUD, Pengembalian, Laporan PDF & Excel) |
-| **User (Siswa)** | `user@kalapustaka.com` | `password` | Akses Katalog, Anggota, & Peminjaman Buku |
+| **Admin** | `admin@kalapustaka.com` | `password` | Akses Penuh (CRUD, Pengembalian, Cetak Laporan PDF) |
+| **User (Siswa)** | `user@kalapustaka.com` | `password` | Akses Katalog Buku, Transaksi & Riwayat Peminjaman |
 
-> 💡 *Pengguna baru juga dapat melakukan pendaftaran akun dengan memilih peran Admin atau User pada halaman Registrasi.*
+> 💡 *Pengguna baru dapat mendaftar melalui halaman Registrasi. Semua akun baru otomatis mendapatkan peran User. Peran Admin hanya dapat diatur oleh administrator.*
 
 ---
 
