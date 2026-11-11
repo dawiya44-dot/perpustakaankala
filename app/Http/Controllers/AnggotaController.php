@@ -17,7 +17,7 @@ class AnggotaController extends Controller
             return $query->where('nama_anggota', 'like', "%{$search}%")
                          ->orWhere('id_anggota', 'like', "%{$search}%");
         })->orderBy('id_anggota', 'asc')->paginate(10);
-        
+
         return view('anggota.index', compact('anggota', 'search'));
     }
 
@@ -26,6 +26,7 @@ class AnggotaController extends Controller
      */
     public function create()
     {
+        abort_if(auth()->user()->role !== 'admin', 403);
         $maxNum = Anggota::all()->map(function ($a) {
             return (int) preg_replace('/[^0-9]/', '', $a->id_anggota);
         })->max() ?? 0;
@@ -39,6 +40,7 @@ class AnggotaController extends Controller
      */
     public function store(Request $request)
     {
+        abort_if(auth()->user()->role !== 'admin', 403);
         $request->validate([
             'id_anggota' => 'required|unique:anggota,id_anggota|max:10',
             'nama_anggota' => 'required|max:50',
@@ -69,6 +71,7 @@ class AnggotaController extends Controller
      */
     public function editById($id)
     {
+        abort_if(auth()->user()->role !== 'admin', 403);
         $anggota = Anggota::findOrFail($id);
         return view('anggota.edit', compact('anggota'));
     }
@@ -78,6 +81,7 @@ class AnggotaController extends Controller
      */
     public function update(Request $request, $id)
     {
+        abort_if(auth()->user()->role !== 'admin', 403);
         $request->validate([
             'nama_anggota' => 'required|max:50',
             'kelas'        => 'nullable|string|max:20',
@@ -107,6 +111,7 @@ class AnggotaController extends Controller
      */
     public function destroy($id)
     {
+        abort_if(auth()->user()->role !== 'admin', 403);
         $anggota = Anggota::findOrFail($id);
         $anggota->delete();
 

@@ -94,6 +94,7 @@ class PeminjamanController extends Controller
      */
     public function create()
     {
+        abort_if(auth()->user()->role !== 'admin', 403);
         $anggota = Anggota::orderBy('nama_anggota', 'asc')->get();
         $buku = DetailBuku::with('buku')
             ->where('status', 'ada')
@@ -121,6 +122,7 @@ class PeminjamanController extends Controller
      */
     public function store(Request $request)
     {
+        abort_if(auth()->user()->role !== 'admin', 403);
         $request->validate([
             'id_pinjam' => 'required|unique:peminjaman,id_pinjam',
             'id_anggota' => 'required|exists:anggota,id_anggota',
@@ -159,6 +161,7 @@ class PeminjamanController extends Controller
      */
     public function kembali($id)
     {
+        abort_if(auth()->user()->role !== 'admin', 403);
         $peminjaman = Peminjaman::findOrFail($id);
 
         DB::beginTransaction();

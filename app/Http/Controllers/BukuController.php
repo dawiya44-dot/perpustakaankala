@@ -29,6 +29,7 @@ class BukuController extends Controller
      */
     public function create()
     {
+        abort_if(auth()->user()->role !== 'admin', 403);
         $last_buku = Buku::orderBy('id_buku', 'desc')->first();
         $next_id = 'b001';
         if ($last_buku) {
@@ -44,6 +45,7 @@ class BukuController extends Controller
      */
     public function store(Request $request)
     {
+        abort_if(auth()->user()->role !== 'admin', 403);
         $request->validate([
             'id_buku' => 'required|unique:buku,id_buku|max:10',
             'judul_buku' => 'required|max:100',
@@ -91,6 +93,7 @@ class BukuController extends Controller
      */
     public function editById($id)
     {
+        abort_if(auth()->user()->role !== 'admin', 403);
         $buku = Buku::findOrFail($id);
         return view('buku.edit', compact('buku'));
     }
@@ -100,6 +103,7 @@ class BukuController extends Controller
      */
     public function update(Request $request, $id)
     {
+        abort_if(auth()->user()->role !== 'admin', 403);
         $request->validate([
             'judul_buku' => 'required|max:100',
             'pengarang' => 'required|max:50',
@@ -144,6 +148,7 @@ class BukuController extends Controller
      */
     public function destroy($id)
     {
+        abort_if(auth()->user()->role !== 'admin', 403);
         $buku = Buku::findOrFail($id);
         $buku->delete();
 
