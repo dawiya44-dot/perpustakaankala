@@ -22,9 +22,9 @@
 <div class="card animate-fade-in">
     <!-- Filter and Search Bar -->
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
-        <form action="{{ route('buku.index') }}" method="GET" style="display: flex; gap: 0.5rem; flex-grow: 1; max-width: 450px;">
+        <form action="{{ route('buku.index') }}" method="GET" style="display: flex; gap: 0.5rem; flex-grow: 1; max-width: 450px;" autocomplete="off">
             <div style="position: relative; flex: 1;">
-                <input type="text" name="search" class="form-control" placeholder="Cari Judul, Pengarang, atau ID..." value="{{ request('search') }}" style="padding-left: 2.5rem;">
+                <input type="text" name="search" class="form-control" placeholder="Cari Judul, Pengarang, atau ID..." value="{{ request('search') }}" style="padding-left: 2.5rem;" autocomplete="off">
                 <i data-feather="search" style="position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; color: var(--text-muted);"></i>
             </div>
             <button type="submit" class="btn btn-primary">Cari</button>
