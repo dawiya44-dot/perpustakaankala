@@ -99,6 +99,9 @@
         }
 
         @media print {
+            @page {
+                margin: 1cm;
+            }
             .filter-toolbar {
                 display: none !important;
             }
