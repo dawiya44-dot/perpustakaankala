@@ -89,7 +89,54 @@ Aplikasi ini menggunakan 5 tabel utama yang saling terelasi:
 
 ---
 
-## 🛠️ Tech Stack
+## � Screenshot Aplikasi
+
+### Halaman Login
+![Login](screenshots/login.png)
+
+### Halaman Registrasi
+![Register](screenshots/register.png)
+
+---
+
+### Dashboard — Tampilan Admin
+![Dashboard Admin](screenshots/dashboard-admin.png)
+
+### Dashboard — Tampilan User
+![Dashboard User](screenshots/dashboard-user.png)
+
+---
+
+### Data Buku — Tampilan Admin (CRUD)
+![Data Buku Admin](screenshots/buku.png)
+
+### Data Buku — Tampilan User (Hanya Lihat)
+![Data Buku User](screenshots/buku-user.png)
+
+---
+
+### Data Anggota
+![Data Anggota](screenshots/anggota.png)
+
+---
+
+### Transaksi Peminjaman — Tampilan Admin
+![Transaksi Admin](screenshots/transaksi-admin.png)
+
+### Transaksi Peminjaman — Tampilan User
+![Transaksi User](screenshots/transaksi-user.png)
+
+### Daftar Peminjaman
+![Peminjaman](screenshots/peminjaman.png)
+
+---
+
+### Laporan PDF
+![Laporan](screenshots/laporan.png)
+
+---
+
+## �🛠️ Tech Stack
 
 | Layer | Teknologi |
 | :--- | :--- |
