@@ -145,11 +145,6 @@
         </form>
 
         <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-            <!-- Export Excel Button -->
-            <a href="{{ route('laporan.excel', ['bulan' => $bulan, 'tahun' => $tahun]) }}" class="btn" style="background: #10b981; color: white; border: none;">
-                <i data-feather="file-text"></i> Ekspor Excel (.csv/.xlsx)
-            </a>
-
             <!-- Print PDF Button -->
             <button class="btn btn-primary" onclick="window.print()" style="background: #4f46e5; border-color: #4f46e5;">
                 <i data-feather="printer"></i> Cetak Laporan (PDF)

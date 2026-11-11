@@ -22,7 +22,7 @@
         <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
             @if(auth()->user()->role === 'admin')
             <a href="{{ route('laporan.index') }}" class="btn" style="background: rgba(255, 255, 255, 0.2); color: white; border: 1px solid rgba(255, 255, 255, 0.3); backdrop-filter: blur(8px);">
-                <i data-feather="printer"></i> Laporan & Ekspor
+                <i data-feather="printer"></i> Cetak Laporan
             </a>
             @endif
             @if(auth()->user()->role === 'admin')
@@ -214,7 +214,10 @@
             <h2 class="card-title">Daftar Transaksi Peminjaman</h2>
             <p style="font-size: 0.875rem; color: var(--text-muted); margin-top: 2px;">Daftar transaksi sirkulasi peminjaman & pengembalian buku</p>
         </div>
-        <div style="display: flex; gap: 0.5rem;">
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <a href="{{ route('peminjaman.index') }}" class="btn btn-secondary btn-sm" style="display: inline-flex; align-items: center; gap: 4px;">
+                Lihat Semua <i data-feather="arrow-right" style="width: 16px; height: 16px;"></i>
+            </a>
             @if(auth()->user()->role === 'admin')
             <a href="{{ route('peminjaman.create') }}" class="btn btn-primary btn-sm">
                 <i data-feather="plus" style="width: 16px; height: 16px;"></i> Peminjaman Baru
@@ -245,12 +248,15 @@
                 @php
                     $dueDate = \Carbon\Carbon::parse($pinjam->tgl_kembali);
                     if ($pinjam->status == '1') {
-                        $isLate = now()->greaterThan($dueDate);
-                        $daysLate = $isLate ? now()->startOfDay()->diffInDays($dueDate->startOfDay()) : 0;
+                        $isLate = \Carbon\Carbon::now()->greaterThan($dueDate);
+                        // Hitung denda: dueDateStart->diffInDays(today) agar hasilnya positif
+                        $today = \Carbon\Carbon::today();
+                        $dueDateStart = $dueDate->copy()->startOfDay();
+                        $daysLate = $isLate ? max(0, (int) $dueDateStart->diffInDays($today)) : 0;
                         $dendaRow = $daysLate * 1000;
                     } else {
                         $isLate = false;
-                        $dendaRow = $pinjam->denda;
+                        $dendaRow = max(0, (int) $pinjam->denda);
                     }
 
                     // Format WhatsApp message & link

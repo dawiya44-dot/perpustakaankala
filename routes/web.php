@@ -52,7 +52,6 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/buku/{id}', [BukuController::class, 'update'])->name('buku.update');
     Route::delete('/buku/{id}', [BukuController::class, 'destroy'])->name('buku.destroy');
 
-    // Laporan & Ekspor
+    // Laporan
     Route::get('/laporan', [DashboardController::class, 'laporan'])->name('laporan.index');
-    Route::get('/laporan/excel', [DashboardController::class, 'exportExcel'])->name('laporan.excel');
 });

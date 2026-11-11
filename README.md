@@ -18,9 +18,8 @@
 5. **Pencarian (Search) & Pagination**
    - Fitur pencarian interaktif untuk Katalog Buku, Data Anggota, dan Transaksi.
    - Fitur *pagination* dinamis pada tabel data.
-6. **Laporan Cetak & Ekspor (PDF & Excel)**
+6. **Laporan Cetak (PDF)**
    - **Cetak Laporan PDF**: Layout khusus dokumen siap cetak langsung dari browser.
-   - **Ekspor Excel (`.xlsx` / `.csv`)**: Mengunduh rekapitulasi laporan bulanan dalam format kompatibel Microsoft Excel.
 7. **Keamanan Dasar**
    - Sandi di-hash menggunakan algoritma **Bcrypt**.
    - Bebas dari SQL Injection menggunakan Laravel Eloquent Prepared Statements.
