@@ -102,7 +102,7 @@
 
     <!-- Main Container -->
     <main class="container" @yield('container_style')>
-        <!-- Global Flash Alerts -->
+        <!-- ── Flash Alerts ───────────────────────────────────────────── -->
         @if (session('success'))
             <div class="alert alert-success animate-fade-in" id="flash-alert">
                 <i data-feather="check-circle" style="width: 20px; height: 20px; color: #10b981;"></i>
@@ -127,8 +127,7 @@
     </main>
 
     <!-- Footer -->
-    <footer>
-        <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 6px;">
+    <footer>        <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 6px;">
             <i data-feather="book-open" style="width: 16px; height: 16px; color: var(--primary);"></i>
             <strong>KalaPustaka</strong>
         </div>
