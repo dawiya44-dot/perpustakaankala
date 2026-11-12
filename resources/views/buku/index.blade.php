@@ -22,7 +22,7 @@
 <div class="card animate-fade-in">
     <!-- Filter and Search Bar -->
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
-        <form action="{{ route('buku.index') }}" method="GET" style="display: flex; gap: 0.5rem; flex-grow: 1; max-width: 450px;" autocomplete="off">
+        <form action="{{ route('buku.index') }}" method="GET" class="search-form" style="display: flex; gap: 0.5rem; flex-grow: 1; max-width: 450px;" autocomplete="off">
             <div style="position: relative; flex: 1;">
                 <input type="text" name="search" class="form-control" placeholder="Cari Judul, Pengarang, atau ID..." value="{{ request('search') }}" style="padding-left: 2.5rem;" autocomplete="off">
                 <i data-feather="search" style="position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; color: var(--text-muted);"></i>
@@ -37,7 +37,7 @@
     </div>
     
     <div class="table-container">
-        <table class="table">
+        <table class="table table-mobile-cards">
             <thead>
                 <tr>
                     <th style="width: 120px;">ID Buku</th>
@@ -53,12 +53,12 @@
             <tbody>
                 @forelse($buku as $item)
                 <tr>
-                    <td>
+                    <td data-label="ID Buku">
                         <span style="font-weight: 700; color: var(--primary); font-family: monospace; font-size: 0.95rem;">
                             {{ $item->id_buku }}
                         </span>
                     </td>
-                    <td>
+                    <td data-label="Judul Buku">
                         <div style="display: flex; align-items: center; gap: 10px;">
                             <div style="width: 34px; height: 34px; border-radius: 8px; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                                 <i data-feather="book" style="width: 18px; height: 18px;"></i>
@@ -68,18 +68,20 @@
                             </span>
                         </div>
                     </td>
-                    <td>
-                        <div style="font-weight: 600; color: var(--text-dark);">{{ $item->pengarang }}</div>
-                        <div style="font-size: 0.825rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px; margin-top: 2px;">
-                            <i data-feather="printer" style="width: 12px; height: 12px;"></i> {{ $item->penerbit }}
+                    <td data-label="Pengarang">
+                        <div>
+                            <div style="font-weight: 600; color: var(--text-dark);">{{ $item->pengarang }}</div>
+                            <div style="font-size: 0.825rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px; margin-top: 2px; justify-content: flex-end;">
+                                <i data-feather="printer" style="width: 12px; height: 12px;"></i> {{ $item->penerbit }}
+                            </div>
                         </div>
                     </td>
-                    <td>
+                    <td data-label="Tahun">
                         <span class="badge" style="background: var(--bg-color); color: var(--text-body); border: 1px solid var(--border);">
                             {{ $item->tahun_terbit }}
                         </span>
                     </td>
-                    <td>
+                    <td data-label="Stok">
                         @if($item->jumlah > 0)
                             <span class="badge badge-success">
                                 {{ $item->jumlah }} Unit
@@ -91,12 +93,12 @@
                         @endif
                     </td>
                     @if(auth()->user()->role === 'admin')
-                    <td style="text-align: center;">
+                    <td class="td-action">
                         <div style="display: flex; justify-content: center; gap: 6px;">
                             <a href="{{ route('buku.edit', $item->id_buku) }}" class="btn btn-secondary btn-sm btn-icon-only" title="Edit Buku" aria-label="Edit buku {{ $item->judul_buku }}">
                                 <i data-feather="edit-2" style="width: 16px; height: 16px; color: var(--primary);"></i>
                             </a>
-                            <form action="{{ route('buku.destroy', $item->id_buku) }}" method="POST" style="display:inline;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus buku ini?');">
+                            <form action="{{ route('buku.destroy', $item->id_buku) }}" method="POST" style="display:inline;" onsubmit="return confirm('Hapus buku {{ addslashes($item->judul_buku) }}?\n\nData buku dan seluruh eksemplar fisiknya akan dihapus permanen.');">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-secondary btn-sm btn-icon-only" style="background: var(--danger-light); border-color: rgba(239, 68, 68, 0.2);" title="Hapus Buku" aria-label="Hapus buku {{ $item->judul_buku }}">
@@ -109,7 +111,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="6" style="text-align: center; padding: 3rem 1rem;">
+                    <td colspan="6" style="text-align: center; padding: 3rem 1rem; border-bottom: none;">
                         <div style="color: var(--text-muted);">
                             <i data-feather="book-open" style="width: 44px; height: 44px; margin-bottom: 0.5rem; stroke-width: 1.5;"></i>
                             <p style="font-weight: 500;">Data buku tidak ditemukan.</p>
