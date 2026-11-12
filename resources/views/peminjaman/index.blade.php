@@ -20,12 +20,12 @@
 
     <!-- Filter Form Toolbar -->
     <div style="padding: 1.25rem 1.5rem; background: var(--bg-color); border-bottom: 1px solid var(--border);">
-        <form action="{{ route('peminjaman.index') }}" method="GET" style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-end;">
+        <form action="{{ route('peminjaman.index') }}" method="GET" class="filter-toolbar">
             
             <!-- Filter Status -->
-            <div style="flex: 1; min-width: 160px;">
-                <label style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;">Status Peminjaman</label>
-                <select name="status" class="form-control" style="font-size: 0.875rem; padding: 0.5rem 0.75rem;">
+            <div class="filter-field">
+                <label class="filter-label">Status Peminjaman</label>
+                <select name="status" class="form-control form-control-sm">
                     <option value="">-- Semua Status --</option>
                     <option value="dipinjam" {{ request('status') == 'dipinjam' ? 'selected' : '' }}>Dipinjam</option>
                     <option value="selesai" {{ request('status') == 'selesai' ? 'selected' : '' }}>Selesai</option>
@@ -33,9 +33,9 @@
             </div>
 
             <!-- Filter Denda -->
-            <div style="flex: 1; min-width: 160px;">
-                <label style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;">Status Denda</label>
-                <select name="denda" class="form-control" style="font-size: 0.875rem; padding: 0.5rem 0.75rem;">
+            <div class="filter-field">
+                <label class="filter-label">Status Denda</label>
+                <select name="denda" class="form-control form-control-sm">
                     <option value="">-- Semua Denda --</option>
                     <option value="ada" {{ request('denda') == 'ada' ? 'selected' : '' }}>Ada Denda</option>
                     <option value="tanpa" {{ request('denda') == 'tanpa' ? 'selected' : '' }}>Tanpa Denda</option>
@@ -43,33 +43,33 @@
             </div>
 
             <!-- Filter Rentang Tanggal Mulai -->
-            <div style="flex: 1; min-width: 150px;">
-                <label style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;">Tgl Pinjam Mulai</label>
-                <input type="date" name="tgl_mulai" value="{{ request('tgl_mulai') }}" class="form-control" style="font-size: 0.875rem; padding: 0.5rem 0.75rem;">
+            <div class="filter-field">
+                <label class="filter-label">Tgl Mulai</label>
+                <input type="date" name="tgl_mulai" value="{{ request('tgl_mulai') }}" class="form-control form-control-sm">
             </div>
 
             <!-- Filter Rentang Tanggal Selesai -->
-            <div style="flex: 1; min-width: 150px;">
-                <label style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;">Tgl Pinjam Sampai</label>
-                <input type="date" name="tgl_selesai" value="{{ request('tgl_selesai') }}" class="form-control" style="font-size: 0.875rem; padding: 0.5rem 0.75rem;">
+            <div class="filter-field">
+                <label class="filter-label">Tgl Sampai</label>
+                <input type="date" name="tgl_selesai" value="{{ request('tgl_selesai') }}" class="form-control form-control-sm">
             </div>
 
             <!-- Filter Search -->
-            <div style="flex: 1.5; min-width: 200px;">
-                <label style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;">Pencarian</label>
+            <div class="filter-field filter-field-wide">
+                <label class="filter-label">Pencarian</label>
                 <div style="position: relative;">
-                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari ID/Anggota/Buku..." class="form-control" style="font-size: 0.875rem; padding: 0.5rem 0.75rem 0.5rem 2.2rem;">
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari ID/Anggota/Buku..." class="form-control form-control-sm" style="padding-left: 2.2rem;" autocomplete="off">
                     <i data-feather="search" style="position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; color: var(--text-muted);"></i>
                 </div>
             </div>
 
             <!-- Action Buttons -->
-            <div style="display: flex; gap: 0.5rem;">
-                <button type="submit" class="btn btn-primary btn-sm" style="padding: 0.55rem 1rem;">
+            <div class="filter-actions">
+                <button type="submit" class="btn btn-primary btn-sm">
                     <i data-feather="filter" style="width: 15px; height: 15px;"></i> Filter
                 </button>
                 @if(request()->hasAny(['status', 'denda', 'tgl_mulai', 'tgl_selesai', 'search']))
-                <a href="{{ route('peminjaman.index') }}" class="btn btn-secondary btn-sm" style="padding: 0.55rem 1rem;">
+                <a href="{{ route('peminjaman.index') }}" class="btn btn-secondary btn-sm">
                     <i data-feather="refresh-cw" style="width: 15px; height: 15px;"></i> Reset
                 </a>
                 @endif
@@ -80,7 +80,7 @@
 
     <!-- Table Section -->
     <div class="table-container">
-        <table class="table">
+        <table class="table table-mobile-cards">
             <thead>
                 <tr>
                     <th>ID Transaksi</th>
@@ -139,21 +139,21 @@
                     }
                 @endphp
                 <tr>
-                    <td>
+                    <td data-label="ID">
                         <span style="font-weight: 700; color: var(--primary); font-family: monospace; font-size: 0.95rem;">
                             {{ $pinjam->id_pinjam }}
                         </span>
                     </td>
-                    <td style="color: var(--text-muted); font-size: 0.875rem;">
-                        <i data-feather="calendar" style="width: 14px; height: 14px; margin-bottom: -2px; margin-right: 4px;"></i>
-                        {{ \Carbon\Carbon::parse($pinjam->tgl_pinjam)->format('d M Y, H:i') }}
+                    <td data-label="Tgl Pinjam" style="color: var(--text-muted); font-size: 0.875rem;">
+                        <span><i data-feather="calendar" style="width: 14px; height: 14px; margin-bottom: -2px; margin-right: 4px;"></i>
+                        {{ \Carbon\Carbon::parse($pinjam->tgl_pinjam)->format('d M Y, H:i') }}</span>
                     </td>
-                    <td style="color: var(--text-muted); font-size: 0.875rem;">
-                        <i data-feather="clock" style="width: 14px; height: 14px; margin-bottom: -2px; margin-right: 4px;"></i>
-                        {{ $dueDate->format('d M Y') }}
+                    <td data-label="Tenggat" style="color: var(--text-muted); font-size: 0.875rem;">
+                        <span><i data-feather="clock" style="width: 14px; height: 14px; margin-bottom: -2px; margin-right: 4px;"></i>
+                        {{ $dueDate->format('d M Y') }}</span>
                     </td>
-                    <td>
-                        <div style="display: flex; align-items: center; gap: 8px;">
+                    <td data-label="Anggota">
+                        <div style="display: flex; align-items: center; gap: 8px; justify-content: flex-end;">
                             <div style="width: 28px; height: 28px; border-radius: 50%; background: var(--primary-light); color: var(--primary); font-weight: 700; font-size: 0.75rem; display: flex; align-items: center; justify-content: center;">
                                 {{ strtoupper(substr($pinjam->anggota->nama_anggota ?? 'A', 0, 1)) }}
                             </div>
@@ -162,17 +162,17 @@
                             </span>
                         </div>
                     </td>
-                    <td>
+                    <td data-label="Judul Buku">
                         <span style="font-weight: 600; color: var(--text-dark);">
                             {{ $pinjam->detailBuku->buku->judul_buku ?? '-' }}
                         </span>
                     </td>
-                    <td>
+                    <td data-label="No Fisik">
                         <span class="badge" style="background: var(--bg-color); color: var(--text-body); border: 1px solid var(--border);">
                             <i data-feather="hash" style="width: 12px; height: 12px;"></i> {{ $pinjam->no_buku }}
                         </span>
                     </td>
-                    <td>
+                    <td data-label="Status">
                         @if($pinjam->status == '1')
                             @if($isLate)
                                 <span class="badge badge-danger">Terlambat</span>
@@ -183,7 +183,7 @@
                             <span class="badge badge-success">Selesai</span>
                         @endif
                     </td>
-                    <td>
+                    <td data-label="Denda">
                         @if($dendaRow > 0)
                             <span style="color: #ef4444; font-weight: 700;">Rp {{ number_format($dendaRow, 0, ',', '.') }}</span>
                         @else
@@ -191,7 +191,7 @@
                         @endif
                     </td>
                     @if(auth()->user()->role === 'admin')
-                    <td style="text-align: center;">
+                    <td class="td-action">
                         <div style="display: flex; justify-content: center; align-items: center; gap: 6px; flex-wrap: wrap;">
                             @if($pinjam->status == '1')
                                 @if($waUrl)
@@ -219,7 +219,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="10" style="text-align: center; padding: 3rem 1rem;">
+                    <td colspan="10" style="text-align: center; padding: 3rem 1rem; border-bottom: none;">
                         <div style="color: var(--text-muted);">
                             <i data-feather="inbox" style="width: 44px; height: 44px; margin-bottom: 0.5rem; stroke-width: 1.5;"></i>
                             <p style="font-weight: 500;">Tidak ada transaksi peminjaman yang sesuai dengan filter.</p>
