@@ -69,7 +69,7 @@ class AnggotaController extends Controller
     /**
      * Menampilkan form edit data anggota berdasarkan ID.
      */
-    public function editById($id)
+    public function editById(string $id)
     {
         abort_if(auth()->user()->role !== 'admin', 403);
         $anggota = Anggota::findOrFail($id);
@@ -79,7 +79,7 @@ class AnggotaController extends Controller
     /**
      * Memperbarui data anggota yang sudah ada.
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, string $id)
     {
         abort_if(auth()->user()->role !== 'admin', 403);
         $request->validate([
@@ -109,7 +109,7 @@ class AnggotaController extends Controller
     /**
      * Menghapus data anggota dari database.
      */
-    public function destroy($id)
+    public function destroy(string $id)
     {
         abort_if(auth()->user()->role !== 'admin', 403);
         $anggota = Anggota::findOrFail($id);
