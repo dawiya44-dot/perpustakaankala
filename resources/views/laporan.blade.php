@@ -45,6 +45,43 @@
             position: relative;
         }
 
+        @media (max-width: 767px) {
+            body { padding: 1rem 0.75rem; }
+            .filter-toolbar {
+                padding: 0.875rem 1rem;
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .filter-toolbar form {
+                flex-direction: column;
+                gap: 0.75rem !important;
+                width: 100%;
+            }
+            .filter-toolbar form > div {
+                width: 100% !important;
+            }
+            .filter-toolbar form select,
+            .filter-toolbar form input[type="number"] {
+                width: 100% !important;
+            }
+            .filter-toolbar > div:last-child {
+                width: 100%;
+            }
+            .filter-toolbar > div:last-child .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            .paper-sheet {
+                padding: 1.5rem 1rem;
+                border-radius: var(--radius);
+            }
+            .report-header h1 { font-size: 1.25rem; }
+            .report-header p { font-size: 0.8rem; }
+            .report-title { font-size: 0.875rem; letter-spacing: 0.01em; }
+            .report-table { font-size: 0.78rem; overflow-x: auto; display: block; }
+            .report-table th, .report-table td { padding: 0.45rem 0.5rem; }
+        }
+
         .report-header {
             text-align: center;
             border-bottom: 2px dashed #cbd5e1;
@@ -177,7 +214,7 @@
         </div>
 
         <div class="report-title">
-            LAPORAN REKAPITULASI PEMINJAMAN BULAN {{ $bulan }} TAHUN {{ $tahun }}
+            LAPORAN REKAPITULASI PEMINJAMAN BULAN {{ \Carbon\Carbon::createFromFormat('m', $bulan)->translatedFormat('F') }} {{ $tahun }}
         </div>
 
         <table class="report-table">
