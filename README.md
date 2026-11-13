@@ -44,6 +44,8 @@ Aplikasi telah dilengkapi *database seeder* dengan dua akun sampel siap pakai:
 
 ## 🗄️ Skema Database & ERD
 
+![ERD KalaPustaka](screenshots/erd.png)
+
 Aplikasi ini menggunakan 5 tabel utama yang saling terelasi:
 - **`users`**: `id`, `name`, `email`, `password`, `role` (`admin`/`user`), `timestamps`
 - **`buku`**: `id_buku` (PK), `judul_buku`, `pengarang`, `penerbit`, `tahun_terbit`, `jumlah`, `timestamps`
