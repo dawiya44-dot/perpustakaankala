@@ -33,7 +33,7 @@
         @csrf
         @method('PUT')
         
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div class="form-grid-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
             <div class="form-group">
                 <label class="form-label" for="id_anggota">ID Anggota (Readonly)</label>
                 <input type="text" class="form-control" id="id_anggota" name="id_anggota" value="{{ $anggota->id_anggota }}" readonly style="background-color: var(--bg-color); color: var(--text-muted); font-family: monospace; font-weight: 700;">
@@ -45,7 +45,7 @@
             </div>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div class="form-grid-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
             <div class="form-group">
                 <label class="form-label" for="nama_anggota">Nama Lengkap Anggota</label>
                 <input type="text" class="form-control" id="nama_anggota" name="nama_anggota" value="{{ old('nama_anggota', $anggota->nama_anggota) }}" required>
@@ -53,11 +53,11 @@
 
             <div class="form-group">
                 <label class="form-label" for="no_wa">No. WhatsApp / HP</label>
-                <input type="text" class="form-control" id="no_wa" name="no_wa" value="{{ old('no_wa', $anggota->no_wa) }}" placeholder="Contoh: 08123456789">
+                <input type="tel" class="form-control" id="no_wa" name="no_wa" value="{{ old('no_wa', $anggota->no_wa) }}" placeholder="Contoh: 08123456789" maxlength="15" inputmode="numeric" pattern="[0-9]*" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
             </div>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div class="form-grid-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
             <div class="form-group">
                 <label class="form-label" for="tempatlahir">Tempat Lahir</label>
                 <input type="text" class="form-control" id="tempatlahir" name="tempatlahir" value="{{ old('tempatlahir', $anggota->tempatlahir) }}" placeholder="Contoh: Jakarta">

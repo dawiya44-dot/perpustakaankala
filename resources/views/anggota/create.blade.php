@@ -32,7 +32,7 @@
     <form action="{{ route('anggota.store') }}" method="POST">
         @csrf
         
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div class="form-grid-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
             <div class="form-group">
                 <label class="form-label" for="id_anggota">ID Anggota (Kode Unik)</label>
                 <input type="text" class="form-control" id="id_anggota" name="id_anggota" value="{{ old('id_anggota', $next_id) }}" placeholder="Contoh: a0004" required autofocus>
@@ -44,7 +44,7 @@
             </div>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div class="form-grid-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
             <div class="form-group">
                 <label class="form-label" for="nama_anggota">Nama Lengkap Anggota</label>
                 <input type="text" class="form-control" id="nama_anggota" name="nama_anggota" value="{{ old('nama_anggota') }}" placeholder="Masukkan nama lengkap" required>
@@ -52,11 +52,11 @@
 
             <div class="form-group">
                 <label class="form-label" for="no_wa">No. WhatsApp / HP</label>
-                <input type="text" class="form-control" id="no_wa" name="no_wa" value="{{ old('no_wa') }}" placeholder="Contoh: 08123456789">
+                <input type="tel" class="form-control" id="no_wa" name="no_wa" value="{{ old('no_wa') }}" placeholder="Contoh: 08123456789" maxlength="15" inputmode="numeric" pattern="[0-9]*" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
             </div>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div class="form-grid-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
             <div class="form-group">
                 <label class="form-label" for="tempatlahir">Tempat Lahir</label>
                 <input type="text" class="form-control" id="tempatlahir" name="tempatlahir" value="{{ old('tempatlahir') }}" placeholder="Kota tempat lahir" required>
