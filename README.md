@@ -1,10 +1,10 @@
-# 📚 KalaPustaka - Sistem Informasi Manajemen Perpustakaan Terpadu
+#  KalaPustaka - Sistem Informasi Manajemen Perpustakaan Terpadu
 
 **KalaPustaka** adalah aplikasi Sistem Informasi Perpustakaan berbasis web modern yang dibangun menggunakan framework **Laravel**. Aplikasi ini dirancang untuk mempermudah pengelolaan koleksi buku, data anggota, transaksi sirkulasi peminjaman dan pengembalian buku, serta pembuatan laporan terperinci.
 
 ---
 
-## ✨ Fitur Utama
+## Fitur Utama
 
 1. **Autentikasi dan Multi-Peran (2 Peran: Admin & User)**
    - **Admin (Petugas Perpustakaan)**: Memiliki akses penuh terhadap manajemen buku (CRUD), data anggota (CRUD), transaksi peminjaman dan pengembalian buku, serta cetak laporan (PDF).
@@ -29,7 +29,7 @@
 
 ---
 
-## 🔑 Akun Demo
+## Akun Demo
 
 Aplikasi telah dilengkapi *database seeder* dengan dua akun sampel siap pakai:
 
@@ -38,11 +38,11 @@ Aplikasi telah dilengkapi *database seeder* dengan dua akun sampel siap pakai:
 | **Admin** | `admin@kalapustaka.com` | `password` | Akses Penuh (CRUD, Pengembalian, Cetak Laporan PDF) |
 | **User (Siswa)** | `user@kalapustaka.com` | `password` | Akses Katalog Buku, Transaksi & Riwayat Peminjaman |
 
-> 💡 *Pengguna baru dapat mendaftar melalui halaman Registrasi. Semua akun baru otomatis mendapatkan peran User. Peran Admin hanya dapat diatur oleh administrator.*
+> *Pengguna baru dapat mendaftar melalui halaman Registrasi. Semua akun baru otomatis mendapatkan peran User. Peran Admin hanya dapat diatur oleh administrator.*
 
 ---
 
-## 🗄️ Skema Database & ERD
+## Skema Database & ERD
 
 ![ERD KalaPustaka](screenshots/erd.png)
 
@@ -55,7 +55,7 @@ Aplikasi ini menggunakan 5 tabel utama yang saling terelasi:
 
 ---
 
-## 🚀 Cara Instalasi & Menjalankan Aplikasi
+## Cara Instalasi & Menjalankan Aplikasi
 
 1. **Clone Repository**
    ```bash
@@ -97,7 +97,7 @@ Aplikasi ini menggunakan 5 tabel utama yang saling terelasi:
 
 ---
 
-## 📸 Screenshot Aplikasi
+## Screenshot Aplikasi
 
 ### Halaman Login
 ![Login](screenshots/login.png)
@@ -144,7 +144,7 @@ Aplikasi ini menggunakan 5 tabel utama yang saling terelasi:
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Layer | Teknologi |
 | :--- | :--- |
@@ -157,5 +157,5 @@ Aplikasi ini menggunakan 5 tabel utama yang saling terelasi:
 
 ---
 
-## 📄 Lisensi
+## Lisensi
 Proyek ini dibuat untuk keperluan tugas akademik Sistem Informasi Perpustakaan KalaPustaka.
