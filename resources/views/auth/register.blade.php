@@ -96,7 +96,7 @@
                     <div class="form-group" style="margin-bottom: 0;">
                         <label class="form-label" for="no_wa" style="font-size: 0.8rem; margin-bottom: 0.3rem;">No. WhatsApp</label>
                         <div style="position: relative;">
-                            <input type="text" class="form-control" id="no_wa" name="no_wa" value="{{ old('no_wa') }}" placeholder="08xxxxxxxxxx" maxlength="20" style="padding-left: 2.5rem; padding-top: 0.5rem; padding-bottom: 0.5rem; font-size: 0.875rem;">
+                        <input type="tel" class="form-control" id="no_wa" name="no_wa" value="{{ old('no_wa') }}" placeholder="08xxxxxxxxxx" maxlength="15" inputmode="numeric" pattern="[0-9]*" oninput="this.value=this.value.replace(/[^0-9]/g,'')" style="padding-left: 2.5rem; padding-top: 0.5rem; padding-bottom: 0.5rem; font-size: 0.875rem;">
                             <i data-feather="smartphone" style="position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--text-muted);"></i>
                         </div>
                     </div>

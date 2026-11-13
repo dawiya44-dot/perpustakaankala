@@ -43,7 +43,7 @@ class AuthController extends Controller
             'email'       => 'required|string|email|max:255|unique:users',
             'password'    => 'required|string|min:6|confirmed',
             'kelas'       => 'nullable|string|max:20',
-            'no_wa'       => 'nullable|string|max:20',
+            'no_wa'       => 'nullable|digits_between:9,15',
             'tempatlahir' => 'nullable|string|max:30',
             'tgllahir'    => 'nullable|date',
         ], [
@@ -56,7 +56,7 @@ class AuthController extends Controller
             'password.min'       => 'Password minimal harus 6 karakter.',
             'password.confirmed' => 'Konfirmasi password tidak cocok. Pastikan kedua password sama.',
             'kelas.max'          => 'Kelas maksimal 20 karakter.',
-            'no_wa.max'          => 'Nomor WhatsApp maksimal 20 karakter.',
+            'no_wa.digits_between' => 'Nomor WhatsApp hanya boleh angka (9–15 digit).',
             'tempatlahir.max'    => 'Tempat lahir maksimal 30 karakter.',
             'tgllahir.date'      => 'Format tanggal lahir tidak valid.',
         ]);

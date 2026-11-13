@@ -45,7 +45,7 @@ class AnggotaController extends Controller
             'id_anggota' => 'required|unique:anggota,id_anggota|max:10',
             'nama_anggota' => 'required|max:50',
             'kelas' => 'required|max:20',
-            'no_wa' => 'nullable|string|max:20',
+            'no_wa' => 'nullable|digits_between:9,15',
             'tempatlahir' => 'required|max:30',
             'tgllahir' => 'required|date',
         ]);
@@ -85,7 +85,7 @@ class AnggotaController extends Controller
         $request->validate([
             'nama_anggota' => 'required|max:50',
             'kelas'        => 'nullable|string|max:20',
-            'no_wa'        => 'nullable|string|max:20',
+            'no_wa'        => 'nullable|digits_between:9,15',
             'tempatlahir'  => 'nullable|string|max:30',
             'tgllahir'     => 'nullable|date',
         ]);
