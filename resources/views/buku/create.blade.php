@@ -41,7 +41,7 @@
             <input type="text" class="form-control" id="judul_buku" name="judul_buku" value="{{ old('judul_buku') }}" placeholder="Masukkan judul lengkap buku" required>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div class="form-grid-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
             <div class="form-group">
                 <label class="form-label" for="pengarang">Pengarang</label>
                 <input type="text" class="form-control" id="pengarang" name="pengarang" value="{{ old('pengarang') }}" placeholder="Nama pengarang" required>
@@ -53,15 +53,15 @@
             </div>
         </div>
         
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div class="form-grid-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
             <div class="form-group">
                 <label class="form-label" for="tahun_terbit">Tahun Terbit</label>
-                <input type="number" class="form-control" id="tahun_terbit" name="tahun_terbit" value="{{ old('tahun_terbit', date('Y')) }}" required>
+                <input type="number" class="form-control" id="tahun_terbit" name="tahun_terbit" value="{{ old('tahun_terbit', date('Y')) }}" required inputmode="numeric" min="1900" max="{{ date('Y') }}" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
             </div>
             
             <div class="form-group">
                 <label class="form-label" for="jumlah">Jumlah Stok (Exemplar)</label>
-                <input type="number" class="form-control" id="jumlah" name="jumlah" value="{{ old('jumlah', 2) }}" required min="1">
+                <input type="number" class="form-control" id="jumlah" name="jumlah" value="{{ old('jumlah', 2) }}" required min="1" inputmode="numeric" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
             </div>
         </div>
 
