@@ -54,7 +54,8 @@
                     <th style="width: 90px;">ID Buku</th>
                     <th>Judul Buku</th>
                     <th style="width: 190px;">Pengarang & Penerbit</th>
-                    <th style="width: 80px;">Tahun</th>
+                    <th style="width: 90px;">Tahun</th>
+                    <th style="width: 100px;">Kategori</th>
                     <th style="width: 110px;">Jumlah Stok</th>
                     @if(auth()->user()->role === 'admin')
                     <th style="width: 130px; text-align: center;">Aksi</th>
@@ -97,6 +98,15 @@
                             {{ $item->tahun_terbit }}
                         </span>
                     </td>
+                    <td data-label="Kategori">
+                        @if($item->kategori)
+                            <span class="badge" style="background: {{ $item->kategori === 'Fiksi' ? '#fef3c7' : '#dbeafe' }}; color: {{ $item->kategori === 'Fiksi' ? '#92400e' : '#1e40af' }}; border: 1px solid {{ $item->kategori === 'Fiksi' ? '#fde68a' : '#bfdbfe' }}; font-weight: 600; font-size: 0.78rem;">
+                                {{ $item->kategori }}
+                            </span>
+                        @else
+                            <span style="color: var(--text-muted); font-size: 0.85rem;">—</span>
+                        @endif
+                    </td>
                     <td data-label="Stok">
                         @if($item->jumlah > 0)
                             <span class="badge badge-success">
@@ -127,7 +137,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="6" style="text-align: center; padding: 3rem 1rem; border-bottom: none;">
+                    <td colspan="7" style="text-align: center; padding: 3rem 1rem; border-bottom: none;">
                         <div style="color: var(--text-muted);">
                             <i data-feather="book-open" style="width: 44px; height: 44px; margin-bottom: 0.5rem; stroke-width: 1.5;"></i>
                             <p style="font-weight: 500;">Data buku tidak ditemukan.</p>
