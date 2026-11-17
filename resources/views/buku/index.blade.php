@@ -3,6 +3,17 @@
 @section('title', 'Daftar Buku')
 
 @section('content')
+<style>
+.kp-pagination{display:flex!important;list-style:none!important;padding:0!important;margin:0!important;gap:4px;flex-wrap:wrap;align-items:center;justify-content:center}
+.kp-pagination li{display:inline-flex!important;list-style:none!important}
+.kp-pagination li::before,.kp-pagination li::marker{display:none!important;content:none!important}
+.kp-pagination a,.kp-pagination span{display:inline-flex;align-items:center;justify-content:center;min-width:36px;height:36px;padding:0 10px;border-radius:8px;border:1px solid #e2e8f0;background:#fff;color:#334155;font-size:.875rem;font-weight:500;text-decoration:none;font-family:inherit;transition:all .15s;cursor:pointer}
+.kp-pagination a:hover{background:#eef2ff;border-color:#6366f1;color:#6366f1}
+.kp-pagination .active span{background:linear-gradient(135deg,#6366f1,#4f46e5)!important;border-color:#6366f1!important;color:#fff!important;font-weight:700!important;box-shadow:0 2px 8px rgba(99,102,241,.35)}
+.kp-pagination .disabled span{background:#f8fafc;color:#94a3b8;cursor:default;opacity:.6}
+.pengarang-nama{font-weight:600;color:#0f172a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;max-width:170px}
+.penerbit-nama{font-size:.825rem;color:#64748b;display:flex;align-items:center;gap:4px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:170px}
+</style>
 <div class="page-header animate-fade-in">
     <div class="page-header-content">
         <div>
@@ -128,8 +139,34 @@
         </table>
     </div>
     
-    <div style="margin-top: 1.5rem;">
-        {{ $buku->links('pagination::bootstrap-4') }}
+    {{-- Pagination --}}
+    @if ($buku->hasPages())
+    <div style="margin-top:1.5rem; display:flex; justify-content:center;">
+        <ul class="kp-pagination">
+            {{-- Prev --}}
+            @if ($buku->onFirstPage())
+                <li class="disabled"><span>&laquo;</span></li>
+            @else
+                <li><a href="{{ $buku->previousPageUrl() }}">&laquo;</a></li>
+            @endif
+
+            {{-- Pages --}}
+            @foreach ($buku->getUrlRange(1, $buku->lastPage()) as $page => $url)
+                @if ($page == $buku->currentPage())
+                    <li class="active"><span>{{ $page }}</span></li>
+                @else
+                    <li><a href="{{ $url }}">{{ $page }}</a></li>
+                @endif
+            @endforeach
+
+            {{-- Next --}}
+            @if ($buku->hasMorePages())
+                <li><a href="{{ $buku->nextPageUrl() }}">&raquo;</a></li>
+            @else
+                <li class="disabled"><span>&raquo;</span></li>
+            @endif
+        </ul>
     </div>
+    @endif
 </div>
 @endsection
