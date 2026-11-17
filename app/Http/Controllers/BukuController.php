@@ -30,7 +30,8 @@ class BukuController extends Controller
     public function create()
     {
         abort_if(auth()->user()->role !== 'admin', 403);
-        $last_buku = Buku::orderBy('id_buku', 'desc')->first();
+        // FIX: Gunakan urutan numerik agar b009 < b010, bukan urutan string
+        $last_buku = Buku::orderByRaw('CAST(SUBSTRING(id_buku, 2) AS UNSIGNED) DESC')->first();
         $next_id = 'b001';
         if ($last_buku) {
             $num = (int) preg_replace('/[^0-9]/', '', $last_buku->id_buku);
@@ -46,35 +47,30 @@ class BukuController extends Controller
     public function store(Request $request)
     {
         abort_if(auth()->user()->role !== 'admin', 403);
-        $request->validate([
-            'id_buku'      => 'required|unique:buku,id_buku|max:10',
+        $validated = $request->validate([
+            'id_buku'      => 'required|unique:buku,id_buku|max:10|regex:/^b\d+$/',
             'judul_buku'   => 'required|max:100',
             'pengarang'    => 'required|max:50',
             'penerbit'     => 'nullable|max:50',
             'tahun_terbit' => 'required|integer|min:1900|max:' . date('Y'),
-            'jumlah'       => 'required|integer|min:1',
+            'jumlah'       => 'required|integer|min:1|max:999',
             'kategori'     => 'nullable|in:Fiksi,Nonfiksi',
         ]);
 
+        // FIX: Simpan null jika penerbit kosong, bukan string ''
+        $validated['penerbit'] = $validated['penerbit'] ?: null;
+
         DB::beginTransaction();
         try {
-            $buku = Buku::create([
-                'id_buku'      => $request->id_buku,
-                'judul_buku'   => $request->judul_buku,
-                'pengarang'    => $request->pengarang,
-                'penerbit'     => $request->penerbit ?? '',
-                'tahun_terbit' => $request->tahun_terbit,
-                'jumlah'       => $request->jumlah,
-                'kategori'     => $request->kategori,
-            ]);
+            $buku = Buku::create($validated);
 
             // Auto-generate physical book copies in detail_buku table
-            for ($i = 1; $i <= $request->jumlah; $i++) {
-                $no_buku = $request->id_buku . '_' . str_pad($i, 2, '0', STR_PAD_LEFT);
+            for ($i = 1; $i <= $validated['jumlah']; $i++) {
+                $no_buku = $validated['id_buku'] . '_' . str_pad($i, 2, '0', STR_PAD_LEFT);
                 DetailBuku::updateOrInsert(
                     ['no_buku' => $no_buku],
                     [
-                        'id_buku' => $request->id_buku,
+                        'id_buku' => $validated['id_buku'],
                         'status' => 'ada',
                         'updated_at' => now(),
                         'created_at' => now(),
@@ -83,7 +79,7 @@ class BukuController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('buku.index')->with('success', 'Data Buku "' . $request->judul_buku . '" dan ' . $request->jumlah . ' fisik eksemplar berhasil ditambahkan.');
+            return redirect()->route('buku.index')->with('success', 'Buku "' . $validated['judul_buku'] . '" dan ' . $validated['jumlah'] . ' eksemplar berhasil ditambahkan.');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->withInput()->withErrors(['error' => 'Gagal menyimpan buku: ' . $e->getMessage()]);
@@ -106,29 +102,25 @@ class BukuController extends Controller
     public function update(Request $request, $id)
     {
         abort_if(auth()->user()->role !== 'admin', 403);
-        $request->validate([
+        $validated = $request->validate([
             'judul_buku'   => 'required|max:100',
             'pengarang'    => 'required|max:50',
             'penerbit'     => 'nullable|max:50',
-            'tahun_terbit' => 'required|integer',
-            'jumlah'       => 'required|integer|min:0',
+            'tahun_terbit' => 'required|integer|min:1900|max:' . date('Y'), // FIX: tambah max
+            'jumlah'       => 'required|integer|min:0|max:999',
             'kategori'     => 'nullable|in:Fiksi,Nonfiksi',
         ]);
+
+        // FIX: Simpan null jika penerbit kosong, bukan string ''
+        $validated['penerbit'] = $validated['penerbit'] ?: null;
 
         DB::beginTransaction();
         try {
             $buku = Buku::findOrFail($id);
-            $buku->update([
-                'judul_buku'   => $request->judul_buku,
-                'pengarang'    => $request->pengarang,
-                'penerbit'     => $request->penerbit ?? '',
-                'tahun_terbit' => $request->tahun_terbit,
-                'jumlah'       => $request->jumlah,
-                'kategori'     => $request->kategori,
-            ]);
+            $buku->update($validated);
 
             // Ensure detail_buku has at least $jumlah physical copies
-            for ($i = 1; $i <= $request->jumlah; $i++) {
+            for ($i = 1; $i <= $validated['jumlah']; $i++) {
                 $no_buku = $buku->id_buku . '_' . str_pad($i, 2, '0', STR_PAD_LEFT);
                 DetailBuku::firstOrCreate(
                     ['no_buku' => $no_buku],
@@ -140,7 +132,7 @@ class BukuController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('buku.index')->with('success', 'Data Buku berhasil diperbarui.');
+            return redirect()->route('buku.index')->with('success', 'Data Buku "' . $buku->judul_buku . '" berhasil diperbarui.');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->withInput()->withErrors(['error' => 'Gagal memperbarui buku: ' . $e->getMessage()]);
@@ -154,8 +146,9 @@ class BukuController extends Controller
     {
         abort_if(auth()->user()->role !== 'admin', 403);
         $buku = Buku::findOrFail($id);
+        $judul = $buku->judul_buku;
         $buku->delete();
 
-        return redirect()->route('buku.index')->with('success', 'Data Buku berhasil dihapus.');
+        return redirect()->route('buku.index')->with('success', 'Buku "' . $judul . '" berhasil dihapus.');
     }
 }
