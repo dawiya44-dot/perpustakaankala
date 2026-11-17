@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $penerbit
  * @property int    $tahun_terbit
  * @property int    $jumlah
+ * @property string|null $kategori
  */
 class Buku extends Model
 {

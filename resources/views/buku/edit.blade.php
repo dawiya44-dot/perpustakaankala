@@ -50,8 +50,8 @@
             </div>
             
             <div class="form-group">
-                <label class="form-label" for="penerbit">Penerbit</label>
-                <input type="text" class="form-control" id="penerbit" name="penerbit" value="{{ old('penerbit', $buku->penerbit) }}" required>
+                <label class="form-label" for="penerbit">Penerbit <span style="font-weight:400; color:var(--text-muted);">(opsional)</span></label>
+                <input type="text" class="form-control" id="penerbit" name="penerbit" value="{{ old('penerbit', $buku->penerbit) }}" placeholder="Nama penerbit">
             </div>
         </div>
         
@@ -65,6 +65,15 @@
                 <label class="form-label" for="jumlah">Jumlah Stok (Exemplar)</label>
                 <input type="number" class="form-control" id="jumlah" name="jumlah" value="{{ old('jumlah', $buku->jumlah) }}" required min="0" inputmode="numeric" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
             </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="kategori">Kategori <span style="font-weight:400; color:var(--text-muted);">(opsional)</span></label>
+            <select class="form-control" id="kategori" name="kategori">
+                <option value="">— Pilih Kategori —</option>
+                <option value="Fiksi" {{ old('kategori', $buku->kategori) === 'Fiksi' ? 'selected' : '' }}>Fiksi</option>
+                <option value="Nonfiksi" {{ old('kategori', $buku->kategori) === 'Nonfiksi' ? 'selected' : '' }}>Nonfiksi</option>
+            </select>
         </div>
 
         <div style="margin-top: 2rem; display: flex; gap: 1rem;">

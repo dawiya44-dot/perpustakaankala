@@ -48,11 +48,11 @@
             </div>
             
             <div class="form-group">
-                <label class="form-label" for="penerbit">Penerbit</label>
-                <input type="text" class="form-control" id="penerbit" name="penerbit" value="{{ old('penerbit') }}" placeholder="Nama penerbit" required>
+                <label class="form-label" for="penerbit">Penerbit <span style="font-weight:400; color:var(--text-muted);">(opsional)</span></label>
+                <input type="text" class="form-control" id="penerbit" name="penerbit" value="{{ old('penerbit') }}" placeholder="Nama penerbit">
             </div>
         </div>
-        
+
         <div class="form-grid-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
             <div class="form-group">
                 <label class="form-label" for="tahun_terbit">Tahun Terbit</label>
@@ -63,6 +63,15 @@
                 <label class="form-label" for="jumlah">Jumlah Stok (Exemplar)</label>
                 <input type="number" class="form-control" id="jumlah" name="jumlah" value="{{ old('jumlah', 2) }}" required min="1" inputmode="numeric" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
             </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="kategori">Kategori <span style="font-weight:400; color:var(--text-muted);">(opsional)</span></label>
+            <select class="form-control" id="kategori" name="kategori">
+                <option value="">— Pilih Kategori —</option>
+                <option value="Fiksi" {{ old('kategori') === 'Fiksi' ? 'selected' : '' }}>Fiksi</option>
+                <option value="Nonfiksi" {{ old('kategori') === 'Nonfiksi' ? 'selected' : '' }}>Nonfiksi</option>
+            </select>
         </div>
 
         <div style="margin-top: 2rem; display: flex; gap: 1rem;">

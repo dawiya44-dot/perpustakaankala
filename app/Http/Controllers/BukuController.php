@@ -47,23 +47,25 @@ class BukuController extends Controller
     {
         abort_if(auth()->user()->role !== 'admin', 403);
         $request->validate([
-            'id_buku' => 'required|unique:buku,id_buku|max:10',
-            'judul_buku' => 'required|max:100',
-            'pengarang' => 'required|max:50',
-            'penerbit' => 'required|max:50',
+            'id_buku'      => 'required|unique:buku,id_buku|max:10',
+            'judul_buku'   => 'required|max:100',
+            'pengarang'    => 'required|max:50',
+            'penerbit'     => 'nullable|max:50',
             'tahun_terbit' => 'required|integer|min:1900|max:' . date('Y'),
-            'jumlah' => 'required|integer|min:1',
+            'jumlah'       => 'required|integer|min:1',
+            'kategori'     => 'nullable|in:Fiksi,Nonfiksi',
         ]);
 
         DB::beginTransaction();
         try {
             $buku = Buku::create([
-                'id_buku' => $request->id_buku,
-                'judul_buku' => $request->judul_buku,
-                'pengarang' => $request->pengarang,
-                'penerbit' => $request->penerbit,
+                'id_buku'      => $request->id_buku,
+                'judul_buku'   => $request->judul_buku,
+                'pengarang'    => $request->pengarang,
+                'penerbit'     => $request->penerbit ?? '',
                 'tahun_terbit' => $request->tahun_terbit,
-                'jumlah' => $request->jumlah,
+                'jumlah'       => $request->jumlah,
+                'kategori'     => $request->kategori,
             ]);
 
             // Auto-generate physical book copies in detail_buku table
@@ -105,22 +107,24 @@ class BukuController extends Controller
     {
         abort_if(auth()->user()->role !== 'admin', 403);
         $request->validate([
-            'judul_buku' => 'required|max:100',
-            'pengarang' => 'required|max:50',
-            'penerbit' => 'required|max:50',
+            'judul_buku'   => 'required|max:100',
+            'pengarang'    => 'required|max:50',
+            'penerbit'     => 'nullable|max:50',
             'tahun_terbit' => 'required|integer',
-            'jumlah' => 'required|integer|min:0',
+            'jumlah'       => 'required|integer|min:0',
+            'kategori'     => 'nullable|in:Fiksi,Nonfiksi',
         ]);
 
         DB::beginTransaction();
         try {
             $buku = Buku::findOrFail($id);
             $buku->update([
-                'judul_buku' => $request->judul_buku,
-                'pengarang' => $request->pengarang,
-                'penerbit' => $request->penerbit,
+                'judul_buku'   => $request->judul_buku,
+                'pengarang'    => $request->pengarang,
+                'penerbit'     => $request->penerbit ?? '',
                 'tahun_terbit' => $request->tahun_terbit,
-                'jumlah' => $request->jumlah,
+                'jumlah'       => $request->jumlah,
+                'kategori'     => $request->kategori,
             ]);
 
             // Ensure detail_buku has at least $jumlah physical copies

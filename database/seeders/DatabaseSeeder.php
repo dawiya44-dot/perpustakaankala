@@ -55,15 +55,18 @@ class DatabaseSeeder extends Seeder
             ['nama_anggota' => 'User Siswa', 'kelas' => 'X TKJ 1', 'tempatlahir' => 'Semarang', 'tgllahir' => '2008-01-01']
         );
 
-        // Seed Buku
+        // Seed Buku (data awal)
         DB::table('buku')->updateOrInsert(
             ['id_buku' => 'b001'],
-            ['judul_buku' => 'Pemrograman Dasar', 'pengarang' => 'Eko Kurniawan', 'penerbit' => 'Informatika', 'tahun_terbit' => 2021, 'jumlah' => 4]
+            ['judul_buku' => 'Pemrograman Dasar', 'pengarang' => 'Eko Kurniawan', 'penerbit' => 'Informatika', 'tahun_terbit' => 2021, 'jumlah' => 4, 'kategori' => 'Nonfiksi']
         );
         DB::table('buku')->updateOrInsert(
             ['id_buku' => 'b002'],
-            ['judul_buku' => 'Jaringan Komputer', 'pengarang' => 'Onno W. Purbo', 'penerbit' => 'Andi Publisher', 'tahun_terbit' => 2020, 'jumlah' => 2]
+            ['judul_buku' => 'Jaringan Komputer', 'pengarang' => 'Onno W. Purbo', 'penerbit' => 'Andi Publisher', 'tahun_terbit' => 2020, 'jumlah' => 2, 'kategori' => 'Nonfiksi']
         );
+
+        // Seed 104 buku dari PDF (skip jika sudah ada)
+        $this->call(BukuSeeder::class);
 
         // Seed Detail Buku
         DB::table('detail_buku')->updateOrInsert(['no_buku' => 'b001_01'], ['id_buku' => 'b001', 'status' => 'dipinjam']);

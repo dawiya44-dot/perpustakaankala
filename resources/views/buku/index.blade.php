@@ -40,11 +40,11 @@
         <table class="table table-mobile-cards">
             <thead>
                 <tr>
-                    <th style="width: 120px;">ID Buku</th>
+                    <th style="width: 90px;">ID Buku</th>
                     <th>Judul Buku</th>
-                    <th>Pengarang & Penerbit</th>
-                    <th style="width: 100px;">Tahun</th>
-                    <th style="width: 120px;">Jumlah Stok</th>
+                    <th style="width: 190px;">Pengarang & Penerbit</th>
+                    <th style="width: 80px;">Tahun</th>
+                    <th style="width: 110px;">Jumlah Stok</th>
                     @if(auth()->user()->role === 'admin')
                     <th style="width: 130px; text-align: center;">Aksi</th>
                     @endif
@@ -68,12 +68,17 @@
                             </span>
                         </div>
                     </td>
-                    <td data-label="Pengarang">
-                        <div>
-                            <div style="font-weight: 600; color: var(--text-dark);">{{ $item->pengarang }}</div>
-                            <div style="font-size: 0.825rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px; margin-top: 2px; justify-content: flex-end;">
-                                <i data-feather="printer" style="width: 12px; height: 12px;"></i> {{ $item->penerbit }}
+                    <td data-label="Pengarang" class="col-pengarang" style="max-width: 190px;">
+                        <div style="overflow: hidden; max-width: 100%;">
+                            <span class="pengarang-nama" title="{{ $item->pengarang }}">{{ $item->pengarang }}</span>
+                            @if($item->penerbit)
+                            <div class="penerbit-nama" title="{{ $item->penerbit }}">
+                                <i data-feather="printer" style="width: 12px; height: 12px; flex-shrink: 0;"></i>
+                                <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ $item->penerbit }}</span>
                             </div>
+                            @else
+                            <div style="font-size: 0.825rem; color: var(--text-muted); margin-top: 2px; font-style: italic;">—</div>
+                            @endif
                         </div>
                     </td>
                     <td data-label="Tahun">
